@@ -44,6 +44,7 @@ import com.android.systemui.qs.tiles.LockscreenToggleTile;
 import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
+import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.VolumeTile;
@@ -87,6 +88,7 @@ public class QSFactoryImpl implements QSFactory {
         else if (tileSpec.equals("network_adb")) return new AdbOverNetworkTile(mHost);
         else if (tileSpec.equals("caffeine")) return new CaffeineTile(mHost);
         else if (tileSpec.equals("immersive_mode")) return new ImmersiveModeTile(mHost);
+        else if (tileSpec.equals("sync")) return new SyncTile(mHost);
         // Intent tiles.
         else if (tileSpec.startsWith(IntentTile.PREFIX)) return IntentTile.create(mHost, tileSpec);
         else if (tileSpec.startsWith(CustomTile.PREFIX)) return CustomTile.create(mHost, tileSpec);
