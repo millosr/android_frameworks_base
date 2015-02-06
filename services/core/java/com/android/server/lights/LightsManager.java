@@ -28,6 +28,47 @@ public abstract class LightsManager {
     public static final int LIGHT_ID_CAPS = 8;
     public static final int LIGHT_ID_FUNC = 9;
     public static final int LIGHT_ID_COUNT = 10;
+    
+    public static final int BACKLIGHT_LINKED = 256;
+    
+    private int mColorLcdBacklight = 0;
+    private int mColorButtonBacklight = 0;
+    private final Object mLock = new Object();
 
     public abstract Light getLight(int id);
+    
+    public void setBacklightBrightness(int brightness) {
+        synchronized (mLock) {
+            if (mColorLcdBacklight != brightness) {
+                mColorLcdBacklight = brightness;
+                
+                getLight(LIGHT_ID_BACKLIGHT).setBrightness(brightness);
+                
+                if (mColorButtonBacklight == BACKLIGHT_LINKED) {
+                    getLight(LIGHT_ID_BUTTONS).setBrightness(brightness);
+                }
+            }
+        }
+    }
+    
+    public void turnOnButtons(int brightness) {
+        synchronized (mLock) {
+            if (mColorButtonBacklight != brightness) {
+                mColorButtonBacklight = brightness;
+                
+                if (mColorButtonBacklight == BACKLIGHT_LINKED) {
+                    getLight(LIGHT_ID_BUTTONS).setBrightness(mColorLcdBacklight);
+                } else {
+                    getLight(LIGHT_ID_BUTTONS).setBrightness(mColorButtonBacklight);
+                }
+            }
+        }
+    }
+    
+    public void turnOffButtons() {
+        synchronized (mLock) {
+            mColorButtonBacklight = 0;
+            getLight(LIGHT_ID_BUTTONS).turnOff();
+        }
+    }
 }

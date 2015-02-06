@@ -185,7 +185,6 @@ public final class PowerManagerService extends SystemService
     private SettingsObserver mSettingsObserver;
     private DreamManagerInternal mDreamManager;
     private Light mAttentionLight;
-    private Light mButtonsLight;
     private Light mKeyboardLight;
     private Light mCapsLight;
     private Light mFnLight;
@@ -571,7 +570,6 @@ public final class PowerManagerService extends SystemService
 
             mLightsManager = getLocalService(LightsManager.class);
             mAttentionLight = mLightsManager.getLight(LightsManager.LIGHT_ID_ATTENTION);
-            mButtonsLight = mLightsManager.getLight(LightsManager.LIGHT_ID_BUTTONS);
             mKeyboardLight = mLightsManager.getLight(LightsManager.LIGHT_ID_KEYBOARD);
             mCapsLight = mLightsManager.getLight(LightsManager.LIGHT_ID_CAPS);
             mFnLight = mLightsManager.getLight(LightsManager.LIGHT_ID_FUNC);
@@ -1645,9 +1643,9 @@ public final class PowerManagerService extends SystemService
 
                         mKeyboardLight.setBrightness(mKeyboardVisible ? keyboardBrightness : 0);
                         if (mButtonTimeout != 0 && now > mLastUserActivityTime + mButtonTimeout) {
-                             mButtonsLight.setBrightness(0);
+                            mLightsManager.turnOffButtons();
                         } else {
-                            mButtonsLight.setBrightness(buttonBrightness);
+                            mLightsManager.turnOnButtons(buttonBrightness);
                             if (buttonBrightness != 0 && mButtonTimeout != 0) {
                                 nextTimeout = now + mButtonTimeout;
                             }
@@ -1656,7 +1654,7 @@ public final class PowerManagerService extends SystemService
                     } else {
                         nextTimeout = mLastUserActivityTime + screenOffTimeout;
                         if (now < nextTimeout) {
-                            mButtonsLight.setBrightness(0);
+                            mLightsManager.turnOffButtons();
                             mKeyboardLight.setBrightness(0);
                             mUserActivitySummary = USER_ACTIVITY_SCREEN_DIM;
                         }
