@@ -422,7 +422,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         // Initialize the power state object for the default display.
         // In the future, we might manage multiple displays independently.
         mPowerState = new DisplayPowerState(mBlanker,
-                mLights.getLight(LightsManager.LIGHT_ID_BACKLIGHT),
+                mLights,
                 new ColorFade(Display.DEFAULT_DISPLAY));
 
         mColorFadeOnAnimator = ObjectAnimator.ofFloat(
@@ -572,7 +572,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         // Use zero brightness when screen is off.
         if (state == Display.STATE_OFF) {
             brightness = PowerManager.BRIGHTNESS_OFF;
-            mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(brightness);
+            mLights.turnOffButtons();
             mLights.getLight(LightsManager.LIGHT_ID_KEYBOARD).setBrightness(brightness);
         }
 
@@ -580,7 +580,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         if (brightness < 0 && (state == Display.STATE_DOZE
                 || state == Display.STATE_DOZE_SUSPEND)) {
             brightness = mScreenBrightnessDozeConfig;
-            mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(PowerManager.BRIGHTNESS_OFF);
+            mLights.turnOffButtons();
             mLights.getLight(LightsManager.LIGHT_ID_KEYBOARD).setBrightness(PowerManager.BRIGHTNESS_OFF);
         }
 
