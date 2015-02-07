@@ -33,6 +33,7 @@ import android.os.SystemProperties;
 import android.os.Process;
 import android.net.LocalSocketAddress;
 import android.net.LocalSocket;
+import android.util.Log;
 import android.util.Slog;
 import android.view.Display;
 
@@ -271,12 +272,12 @@ final class ProcessList {
         else if (scale > 1) scale = 1;
         int minfree_adj = Resources.getSystem().getInteger(
                 com.android.internal.R.integer.config_lowMemoryKillerMinFreeKbytesAdjust);
-        int minfree_abs = SystemProperties.getInt("sys.ram.minfree", -1);
+        int minfree_abs = SystemProperties.getInt("persist.sys.ram_minfree", -1);
         if (minfree_abs < 0) {
             minfree_abs = Resources.getSystem().getInteger(
                     com.android.internal.R.integer.config_lowMemoryKillerMinFreeKbytesAbsolute);
         }
-        if (false) {
+        if (true) {
             Slog.i("XXXXXX", "minfree_adj=" + minfree_adj + " minfree_abs=" + minfree_abs);
         }
 
