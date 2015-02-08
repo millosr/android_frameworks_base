@@ -37,6 +37,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.os.Trace;
 import android.util.MathUtils;
 import android.util.Slog;
@@ -275,8 +276,12 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         final int screenBrightnessSettingMinimum = clampAbsoluteBrightness(resources.getInteger(
                 com.android.internal.R.integer.config_screenBrightnessSettingMinimum));
 
-        mScreenBrightnessDozeConfig = clampAbsoluteBrightness(resources.getInteger(
-                com.android.internal.R.integer.config_screenBrightnessDoze));
+        int screenBrightnessDozeProperty = SystemProperties.getInt("persist.screen.doze_brightness",-1);
+        if (screenBrightnessDozeProperty < 0 || screenBrightnessDozeProperty > 255) {
+            screenBrightnessDozeProperty = resources.getInteger(
+                    com.android.internal.R.integer.config_screenBrightnessDoze);
+        }
+        mScreenBrightnessDozeConfig = clampAbsoluteBrightness(screenBrightnessDozeProperty);
 
         mScreenBrightnessDimConfig = clampAbsoluteBrightness(resources.getInteger(
                 com.android.internal.R.integer.config_screenBrightnessDim));
