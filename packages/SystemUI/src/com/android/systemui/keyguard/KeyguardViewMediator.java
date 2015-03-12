@@ -244,6 +244,8 @@ public class KeyguardViewMediator extends SystemUI {
 
     private boolean mScreenOn;
 
+    private boolean mDismissSecurelyOnScreenOn = false;
+
     // last known state of the cellular connection
     private String mPhoneState = TelephonyManager.EXTRA_STATE_IDLE;
 
@@ -692,14 +694,17 @@ public class KeyguardViewMediator extends SystemUI {
             if (callback != null) {
                 notifyScreenOnLocked(callback);
             }
+            if (mDismissSecurelyOnScreenOn) {
+                mDismissSecurelyOnScreenOn = false;
+                dismiss();
+            }
         }
         KeyguardUpdateMonitor.getInstance(mContext).dispatchScreenTurnedOn();
         maybeSendUserPresentBroadcast();
     }
 
     private void maybeSendUserPresentBroadcast() {
-        if (mSystemReady && isKeyguardDisabled()
-                && !mUserManager.isUserSwitcherEnabled()) {
+        if (mSystemReady && isKeyguardDisabled()) {
             // Lock screen is disabled because the user has set the preference to "None".
             // In this case, send out ACTION_USER_PRESENT here instead of in
             // handleKeyguardDone()
@@ -712,7 +717,7 @@ public class KeyguardViewMediator extends SystemUI {
             if (DEBUG) Log.d(TAG, "isKeyguardDisabled: keyguard is disabled externally");
             return true;
         }
-        if (mLockPatternUtils.isLockScreenDisabled() && mUserManager.getUsers(true).size() == 1) {
+        if (mLockPatternUtils.isLockScreenDisabled()) {
             if (DEBUG) Log.d(TAG, "isKeyguardDisabled: keyguard is disabled by setting");
             return true;
         }
@@ -1133,7 +1138,11 @@ public class KeyguardViewMediator extends SystemUI {
                 }
             } else if (DISMISS_KEYGUARD_SECURELY_ACTION.equals(intent.getAction())) {
                 synchronized (KeyguardViewMediator.this) {
-                    dismiss();
+                    if (mScreenOn) {
+                        dismiss();
+                    } else {
+                        mDismissSecurelyOnScreenOn = true;
+                    }
                 }
             }
         }

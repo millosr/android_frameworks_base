@@ -243,6 +243,25 @@ public class ThemesContract {
          * <P>Default: 0</P>
          */
         public static final String TARGET_API = "target_api";
+
+        /**
+         * The install state of the theme.
+         * Can be one of the following:
+         * {@link InstallState#UNKNOWN}
+         * {@link InstallState#INSTALLING}
+         * {@link InstallState#UPDATING}
+         * {@link InstallState#INSTALLED}
+         * <P>Type: INTEGER</P>
+         * <P>Default: 0</P>
+         */
+        public static final String INSTALL_STATE = "install_state";
+
+        public static class InstallState {
+            public static final int UNKNOWN = 0;
+            public static final int INSTALLING = 1;
+            public static final int UPDATING = 2;
+            public static final int INSTALLED = 3;
+        }
     }
 
     /**
@@ -263,6 +282,18 @@ public class ThemesContract {
          * <P>Type: String</P>
          */
         public static final String COL_VALUE = "value";
+
+        /**
+         * The package name that corresponds to where this component was applied from previously
+         * <P>Type: String</P>
+         */
+        public static final String COL_PREV_VALUE = "previous_value";
+
+        /**
+         * Time when this entry was last updated
+         * <P>Type: INTEGER</P>
+         */
+        public static final String COL_UPDATE_TIME = "update_time";
 
         /**
          * Valid keys
@@ -561,5 +592,40 @@ public class ThemesContract {
          * <P>Type: BLOB (bitmap)</P>
          */
         public static final String LOCK_WALLPAPER_PREVIEW = "lock_wallpaper_preview";
+    }
+
+    public static class Intent {
+        /**
+         * Action sent from the provider when a theme has been fully installed.  Fully installed
+         * means that the apk was installed by PackageManager and the theme resources were
+         * processed and cached by {@link com.android.server.ThemeService}
+         * Requires the {@link android.Manifest.permission#READ_THEMES} permission to receive
+         * this broadcast.
+         */
+        public static final String ACTION_THEME_INSTALLED =
+                "themescontract.intent.action.THEME_INSTALLED";
+
+        /**
+         * Action sent from the provider when a theme has been updated.
+         * Requires the {@link android.Manifest.permission#READ_THEMES} permission to receive
+         * this broadcast.
+         */
+        public static final String ACTION_THEME_UPDATED =
+                "themescontract.intent.action.THEME_UPDATED";
+
+        /**
+         * Action sent from the provider when a theme has been removed.
+         * Requires the {@link android.Manifest.permission#READ_THEMES} permission to receive
+         * this broadcast.
+         */
+        public static final String ACTION_THEME_REMOVED =
+                "themescontract.intent.action.THEME_REMOVED";
+
+        /**
+         * Uri scheme used to broadcast the theme's package name when broadcasting
+         * {@link android.provider.ThemesContract.Intent#ACTION_THEME_INSTALLED} or
+         * {@link android.provider.ThemesContract.Intent#ACTION_THEME_REMOVED}
+         */
+        public static final String URI_SCHEME_PACKAGE = "package";
     }
 }

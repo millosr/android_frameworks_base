@@ -188,13 +188,13 @@ public class ThemeService extends IThemeService.Stub {
                         } catch (PackageManager.NameNotFoundException e) {
                             name = null;
                         }
-                        if (name != null) {
-                            int result = mPM.processThemeResources(pkgName);
-                            if (result < 0) {
-                                postFailedThemeInstallNotification(name);
-                            }
-                            sendThemeResourcesCachedBroadcast(pkgName, result);
+
+                        int result = mPM.processThemeResources(pkgName);
+                        if (result < 0) {
+                            postFailedThemeInstallNotification(name != null ? name : pkgName);
                         }
+                        sendThemeResourcesCachedBroadcast(pkgName, result);
+
                         synchronized (mThemesToProcessQueue) {
                             mThemesToProcessQueue.remove(0);
                             if (mThemesToProcessQueue.size() > 0 &&
@@ -368,10 +368,11 @@ public class ThemeService extends IThemeService.Stub {
         }
 
         if (request == null || request.getNumChangesRequested() == 0) {
-            postFinish(true, request);
+            postFinish(true, request, 0);
             return;
         }
         mIsThemeApplying = true;
+        long updateTime = System.currentTimeMillis();
 
         incrementProgress(5);
 
@@ -402,12 +403,12 @@ public class ThemeService extends IThemeService.Stub {
         }
 
         if (request.getAlarmThemePackageName() != null) {
-            updateNotifications(request.getAlarmThemePackageName());
+            updateAlarms(request.getAlarmThemePackageName());
             incrementProgress(progressIncrement);
         }
 
         if (request.getRingtoneThemePackageName() != null) {
-            updateNotifications(request.getRingtoneThemePackageName());
+            updateRingtones(request.getRingtoneThemePackageName());
             incrementProgress(progressIncrement);
         }
         Environment.setUserRequired(true);
@@ -422,13 +423,15 @@ public class ThemeService extends IThemeService.Stub {
             incrementProgress(progressIncrement);
         }
 
-        updateProvider(request);
+        updateProvider(request, updateTime);
 
-        updateConfiguration(request, removePerAppTheme);
+        if (shouldUpdateConfiguration(request)) {
+            updateConfiguration(request, removePerAppTheme);
+        }
 
         killLaunchers(request);
 
-        postFinish(true, request);
+        postFinish(true, request, updateTime);
         mIsThemeApplying = false;
     }
 
@@ -463,9 +466,9 @@ public class ThemeService extends IThemeService.Stub {
         processInstalledThemes();
     }
 
-    private void updateProvider(ThemeChangeRequest request) {
+    private void updateProvider(ThemeChangeRequest request, long updateTime) {
         ContentValues values = new ContentValues();
-
+        values.put(MixnMatchColumns.COL_UPDATE_TIME, updateTime);
         Map<String, String> componentMap = request.getThemeComponentsMap();
         for (String component : componentMap.keySet()) {
             values.put(ThemesContract.MixnMatchColumns.COL_VALUE, componentMap.get(component));
@@ -723,6 +726,15 @@ public class ThemeService extends IThemeService.Stub {
         return true;
     }
 
+    private boolean shouldUpdateConfiguration(ThemeChangeRequest request) {
+        return request.getOverlayThemePackageName() != null ||
+                request.getFontThemePackageName() != null ||
+                request.getIconsThemePackageName() != null ||
+                request.getStatusBarThemePackageName() != null ||
+                request.getNavBarThemePackageName() != null ||
+                request.getPerAppOverlays().size() > 0;
+    }
+
     private static ThemeConfig.Builder createBuilderFrom(Configuration config,
             ThemeChangeRequest request, String pkgName, boolean removePerAppThemes) {
         ThemeConfig.Builder builder = new ThemeConfig.Builder(config.themeConfig);
@@ -760,7 +772,7 @@ public class ThemeService extends IThemeService.Stub {
             }
         }
 
-        builder.setThemeChangeTimestamp(System.currentTimeMillis());
+        builder.setLastThemeChangeRequestType(request.getReqeustType());
 
         return builder;
     }
@@ -840,7 +852,7 @@ public class ThemeService extends IThemeService.Stub {
         mClients.finishBroadcast();
     }
 
-    private void postFinish(boolean isSuccess, ThemeChangeRequest request) {
+    private void postFinish(boolean isSuccess, ThemeChangeRequest request, long updateTime) {
         synchronized(this) {
             mProgress = 0;
         }
@@ -858,7 +870,7 @@ public class ThemeService extends IThemeService.Stub {
 
         // if successful, broadcast that the theme changed
         if (isSuccess) {
-            broadcastThemeChange(request);
+            broadcastThemeChange(request, updateTime);
         }
     }
 
@@ -875,13 +887,15 @@ public class ThemeService extends IThemeService.Stub {
         mProcessingListeners.finishBroadcast();
     }
 
-    private void broadcastThemeChange(ThemeChangeRequest request) {
+    private void broadcastThemeChange(ThemeChangeRequest request, long updateTime) {
         Map<String, String> componentMap = request.getThemeComponentsMap();
         if (componentMap == null || componentMap.size() == 0) return;
 
         final Intent intent = new Intent(ThemeUtils.ACTION_THEME_CHANGED);
         ArrayList componentsArrayList = new ArrayList(componentMap.keySet());
-        intent.putStringArrayListExtra("components", componentsArrayList);
+        intent.putStringArrayListExtra(ThemeUtils.EXTRA_COMPONENTS, componentsArrayList);
+        intent.putExtra(ThemeUtils.EXTRA_REQUEST_TYPE, request.getReqeustType().ordinal());
+        intent.putExtra(ThemeUtils.EXTRA_UPDATE_TIME, updateTime);
         mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
     }
 
@@ -1101,7 +1115,7 @@ public class ThemeService extends IThemeService.Stub {
                 // In case the mixnmatch table has a mods_launcher entry, we'll clear it
                 ThemeChangeRequest.Builder builder = new ThemeChangeRequest.Builder();
                 builder.setWallpaper("");
-                updateProvider(builder.build());
+                updateProvider(builder.build(), System.currentTimeMillis());
             } else {
                 mWallpaperChangedByUs = false;
             }
