@@ -60,6 +60,7 @@
   <string name="privacy_guard_dialog_title">Защищённый режим</string>
   <string name="privacy_guard_dialog_summary">Приложение «<xliff:g id="app">%1$s</xliff:g>» пытается <xliff:g id="op">%2$s</xliff:g>.</string>
   <string name="global_action_reboot">Перезагрузить</string>
+  <string name="global_action_current_user">Текущий</string>
   <string name="reboot_reboot">Перезагрузка</string>
   <string name="reboot_recovery">Режим восстановления</string>
   <string name="reboot_bootloader">Загрузчик</string>
@@ -178,4 +179,15 @@
   <string name="usb_media_checking">USB-накопитель проверяется.</string>
   <string name="usb_media_removed">USB-накопитель извлечён.</string>
   <string name="usb_media_shared">Сейчас USB-накопитель используется компьютером.</string>
+  <string name="live_display_auto">Автоматически</string>
+  <string name="live_display_auto_summary">Автоматическая подстройка цветовой температуры экрана после заката и восхода солнца</string>
+  <string name="live_display_off">Отключить</string>
+  <string name="live_display_off_summary">Отключить автоподстройку</string>
+  <string name="live_display_day">День</string>
+  <string name="live_display_day_summary">Только дневные настройки</string>
+  <string name="live_display_night">Ночь</string>
+  <string name="live_display_night_summary">Только ночные настройки</string>
+  <string name="live_display_outdoor">На улице (яркое солнце)</string>
+  <string name="live_display_outdoor_summary">Только уличный режим</string>
+  <string name="live_display_hint">LiveDisplay поможет снизить зрительное напряжение и улучшить сон. Нажмите здесь, чтобы попробовать!</string>
 </resources>

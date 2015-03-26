@@ -60,6 +60,7 @@
   <string name="privacy_guard_dialog_title">Ochrana súkromia</string>
   <string name="privacy_guard_dialog_summary">Aplikácia <xliff:g id="app">%1$s</xliff:g> sa pokúša <xliff:g id="op">%2$s</xliff:g>.</string>
   <string name="global_action_reboot">Reštartovať</string>
+  <string name="global_action_current_user">Aktuálny</string>
   <string name="reboot_reboot">Reštartovať</string>
   <string name="reboot_recovery">Recovery</string>
   <string name="reboot_bootloader">Bootloader</string>
@@ -181,7 +182,9 @@
   <string name="usb_media_removed">USB úložisko bolo odstránené.</string>
   <string name="usb_media_shared">USB úložisko v súčasnosti používa počítač.</string>
   <string name="live_display_auto">Automatické</string>
-  <string name="live_display_auto_summary">Automaticky upraviť obrazovku pre podmienky okolia</string>
+  <string name="live_display_auto_summary">Automaticky upraviť teplotu farieb obrazovky po západe a východe slnka</string>
+  <string name="live_display_off">Vypnuté</string>
+  <string name="live_display_off_summary">Zakázať všetky úpravy</string>
   <string name="live_display_day">Deň</string>
   <string name="live_display_day_summary">Použiť len nastavenia pre deň</string>
   <string name="live_display_night">Noc</string>

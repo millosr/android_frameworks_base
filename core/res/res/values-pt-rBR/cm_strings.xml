@@ -60,6 +60,7 @@
   <string name="privacy_guard_dialog_title">Proteção à Privacidade</string>
   <string name="privacy_guard_dialog_summary"><xliff:g id="app">%1$s</xliff:g> gostaria de <xliff:g id="op">%2$s</xliff:g>.</string>
   <string name="global_action_reboot">Reiniciar</string>
+  <string name="global_action_current_user">Atual</string>
   <string name="reboot_reboot">Reiniciar</string>
   <string name="reboot_recovery">Recuperação</string>
   <string name="reboot_bootloader">Bootloader</string>
@@ -179,7 +180,9 @@
   <string name="usb_media_removed">O armazenamento USB foi removido.</string>
   <string name="usb_media_shared">O armazenamento USB está sendo utilizado pelo computador.</string>
   <string name="live_display_auto">Automático</string>
-  <string name="live_display_auto_summary">Ajustar automaticamente a tela para condições do ambiente</string>
+  <string name="live_display_auto_summary">Ajusta automaticamente a temperatura de cor da tela após o pôr do sol e nascer do sol</string>
+  <string name="live_display_off">Desligado</string>
+  <string name="live_display_off_summary">Desativar todos os ajustes</string>
   <string name="live_display_day">Dia</string>
   <string name="live_display_day_summary">Usar apenas configurações de dia</string>
   <string name="live_display_night">Noite</string>
