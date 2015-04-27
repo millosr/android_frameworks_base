@@ -2685,7 +2685,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
             // If we have released the home key, and didn't do anything else
             // while it was pressed, then it is time to go home!
-            if (!down && mHomePressed) {
+            if (!down) {
                 if (mDoubleTapOnHomeBehavior != KEY_ACTION_APP_SWITCH) {
                     cancelPreloadRecentApps();
                 }
@@ -4525,8 +4525,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     /** {@inheritDoc} */
     @Override
     public int finishPostLayoutPolicyLw() {
-        if (mWinShowWhenLocked != null &&
-                mWinShowWhenLocked != mTopFullscreenOpaqueWindowState) {
+        if (mWinShowWhenLocked != null && mTopFullscreenOpaqueWindowState != null &&
+                mWinShowWhenLocked.getAppToken() != mTopFullscreenOpaqueWindowState.getAppToken()
+                && isKeyguardLocked()) {
             // A dialog is dismissing the keyguard. Put the wallpaper behind it and hide the
             // fullscreen window.
             // TODO: Make sure FLAG_SHOW_WALLPAPER is restored when dialog is dismissed. Or not.
