@@ -565,6 +565,19 @@ public final class Settings {
 
     /**
      * @hide
+     * Activity Action: Show the "app ops" details screen.
+     * <p>
+     * Input: The Intent's data URI specifies the application package name
+     * to be shown, with the "package" scheme.  That is "package:com.my.app".
+     * <p>
+     * Output: Nothing.
+     */
+    @SdkConstant(SdkConstantType.ACTIVITY_INTENT_ACTION)
+    public static final String ACTION_APP_OPS_DETAILS_SETTINGS =
+            "android.settings.APP_OPS_DETAILS_SETTINGS";
+
+    /**
+     * @hide
      * Activity Action: Show the "app ops" settings screen.
      * <p>
      * Input: Nothing.
@@ -1221,6 +1234,9 @@ public final class Settings {
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_ENABLED);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_VISIBLE);
             MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
+            MOVED_TO_SECURE.add(Secure.LOCK_PATTERN_SIZE);
+            MOVED_TO_SECURE.add(Secure.LOCK_DOTS_VISIBLE);
+            MOVED_TO_SECURE.add(Secure.LOCK_SHOW_ERROR_PATH);
             MOVED_TO_SECURE.add(Secure.LOGGING_ID);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_ENABLED);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_LAST_UPDATE);
@@ -3499,6 +3515,26 @@ public final class Settings {
         public static final String LIVE_DISPLAY_HINTED = "live_display_hinted";
 
         /**
+         * Whether "None" mode will act as "Silent"
+         * Effectively allowing alarms to always use the alarm stream volume when true.
+         * @hide
+         */
+        public static final String NONE_IS_SILENT = "none_is_silent";
+
+        /**
+         * Whether the notification light will be allowed when in zen mode during downtime
+         * @hide
+         */
+        public static final String ALLOW_LIGHTS = "allow_lights";
+
+        /**
+         * Volume key controls ringtone or media sound stream
+         * @hide
+         */
+        public static final String VOLUME_KEYS_CONTROL_RING_STREAM =
+                "volume_keys_control_ring_stream";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -3581,7 +3617,9 @@ public final class Settings {
             DISPLAY_TEMPERATURE_DAY,
             DISPLAY_TEMPERATURE_MODE,
             DISPLAY_AUTO_OUTDOOR_MODE,
-            LIVE_DISPLAY_HINTED
+            LIVE_DISPLAY_HINTED,
+            NONE_IS_SILENT,
+            ALLOW_LIGHTS
         };
 
         /**
@@ -3882,6 +3920,9 @@ public final class Settings {
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_ENABLED);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_VISIBLE);
             MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED);
+            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_PATTERN_SIZE);
+            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_DOTS_VISIBLE);
+            MOVED_TO_LOCK_SETTINGS.add(Secure.LOCK_SHOW_ERROR_PATH);
 
             MOVED_TO_GLOBAL = new HashSet<String>();
             MOVED_TO_GLOBAL.add(Settings.Global.ADB_ENABLED);
@@ -4652,6 +4693,24 @@ public final class Settings {
         @Deprecated
         public static final String
                 LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
+
+        /**
+         * Determines the width and height of the LockPatternView widget
+         * @hide
+         */
+        public static final String LOCK_PATTERN_SIZE = "lock_pattern_size";
+
+        /**
+         * Whether lock pattern will show dots (0 = false, 1 = true)
+         * @hide
+         */
+        public static final String LOCK_DOTS_VISIBLE = "lock_pattern_dotsvisible";
+
+        /**
+         * Whether lockscreen error pattern is visible (0 = false, 1 = true)
+         * @hide
+         */
+        public static final String LOCK_SHOW_ERROR_PATH = "lock_pattern_show_error_path";
 
         /**
          * This preference allows the device to be locked given time after screen goes off,
