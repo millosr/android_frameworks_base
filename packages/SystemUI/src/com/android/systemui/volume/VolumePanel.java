@@ -451,7 +451,8 @@ public class VolumePanel extends Handler implements DemoMode {
         mToneGenerators = new ToneGenerator[AudioSystem.getNumStreamTypes()];
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mHasVibrator = mVibrator != null && mVibrator.hasVibrator();
-        mVoiceCapable = context.getResources().getBoolean(R.bool.config_voice_capable);
+        mVoiceCapable = context.getResources().getBoolean(
+                            com.android.internal.R.bool.config_voice_capable);
 
         mVolumeLinkNotification = Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.VOLUME_LINK_NOTIFICATION, 1) == 1;
@@ -716,6 +717,7 @@ public class VolumePanel extends Handler implements DemoMode {
                         public void onClick(View v) {
                             resetTimeout();
                             toggleRinger(sc);
+                            updateStates();
                         }
                     });
                 }
@@ -805,7 +807,9 @@ public class VolumePanel extends Handler implements DemoMode {
     private boolean isValidExpandedPanelControl(int streamType) {
         switch (streamType) {
             case AudioManager.STREAM_NOTIFICATION:
-                if (mVoiceCapable && mVolumeLinkNotification) {
+                if (! mVoiceCapable) {
+                    return true;
+                } else if (mVoiceCapable && mVolumeLinkNotification) {
                     return false;
                 }
             case AudioManager.STREAM_RING:
@@ -1001,9 +1005,9 @@ public class VolumePanel extends Handler implements DemoMode {
     private void updateTimeoutDelay() {
         mTimeoutDelay = mDemoIcon != 0 ? TIMEOUT_DELAY_EXPANDED
                 : sSafetyWarning != null ? TIMEOUT_DELAY_SAFETY_WARNING
-                : mActiveStreamType == AudioManager.STREAM_MUSIC ? TIMEOUT_DELAY_SHORT
                 : mZenPanelExpanded ? TIMEOUT_DELAY_EXPANDED
                 : isZenPanelVisible() ? TIMEOUT_DELAY_COLLAPSED
+                : mActiveStreamType == AudioManager.STREAM_MUSIC ? TIMEOUT_DELAY_SHORT
                 : TIMEOUT_DELAY;
     }
 
@@ -1586,7 +1590,11 @@ public class VolumePanel extends Handler implements DemoMode {
             case MSG_INTERNAL_RINGER_MODE_CHANGED:
             case MSG_NOTIFICATION_EFFECTS_SUPPRESSOR_CHANGED: {
                 if (isShowing()) {
-                    updateActiveSlider();
+                    if (mExtendedPanelExpanded) {
+                        updateStates();
+                    } else {
+                        updateActiveSlider();
+                    }
                 }
                 break;
             }
@@ -1671,6 +1679,7 @@ public class VolumePanel extends Handler implements DemoMode {
                 StreamControl sc = (StreamControl) tag;
                 setStreamVolume(sc, progress,
                         AudioManager.FLAG_SHOW_UI | AudioManager.FLAG_VIBRATE);
+                updateStates();
             }
             resetTimeout();
         }

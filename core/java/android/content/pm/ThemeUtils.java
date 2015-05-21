@@ -99,6 +99,10 @@ public class ThemeUtils {
     public static final String SYSTEM_NOTIFICATIONS_PATH = SYSTEM_MEDIA_PATH + File.separator
             + "notifications";
 
+    // path to asset lockscreen and wallpapers directory
+    public static final String LOCKSCREEN_WALLPAPER_PATH = "lockscreen";
+    public static final String WALLPAPER_PATH = "wallpapers";
+
     private static final String MEDIA_CONTENT_URI = "content://media/internal/audio/media";
 
     // Constants for theme change broadcast
@@ -120,7 +124,8 @@ public class ThemeUtils {
     // Actions in manifests which identify legacy icon packs
     public static final String[] sSupportedActions = new String[] {
             "org.adw.launcher.THEMES",
-            "com.gau.go.launcherex.theme"
+            "com.gau.go.launcherex.theme",
+            "com.novalauncher.THEME"
     };
 
     // Categories in manifests which identify legacy icon packs
@@ -512,7 +517,7 @@ public class ThemeUtils {
         try {
             Context uiContext = context.createPackageContext("com.android.systemui",
                     Context.CONTEXT_RESTRICTED);
-            return new ThemedUiContext(uiContext, context.getPackageName());
+            return new ThemedUiContext(uiContext, context.getApplicationContext());
         } catch (PackageManager.NameNotFoundException e) {
         }
 
@@ -527,17 +532,29 @@ public class ThemeUtils {
     }
 
     public static String getLockscreenWallpaperPath(AssetManager assetManager) throws IOException {
-        String[] assets = assetManager.list("lockscreen");
+        String[] assets = assetManager.list(LOCKSCREEN_WALLPAPER_PATH);
         String asset = getFirstNonEmptyAsset(assets);
         if (asset == null) return null;
-        return "lockscreen/" + asset;
+        return LOCKSCREEN_WALLPAPER_PATH + File.separator + asset;
     }
 
     public static String getWallpaperPath(AssetManager assetManager) throws IOException {
-        String[] assets = assetManager.list("wallpapers");
+        String[] assets = assetManager.list(WALLPAPER_PATH);
         String asset = getFirstNonEmptyAsset(assets);
         if (asset == null) return null;
-        return "wallpapers/" + asset;
+        return WALLPAPER_PATH + File.separator + asset;
+    }
+
+    public static List<String> getWallpaperPathList(AssetManager assetManager)
+            throws IOException {
+        List<String> wallpaperList = new ArrayList<String>();
+        String[] assets = assetManager.list(WALLPAPER_PATH);
+        for (String asset : assets) {
+            if (!TextUtils.isEmpty(asset)) {
+                wallpaperList.add(WALLPAPER_PATH + File.separator + asset);
+            }
+        }
+        return wallpaperList;
     }
 
     // Returns the first non-empty asset name. Empty assets can occur if the APK is built
@@ -547,7 +564,7 @@ public class ThemeUtils {
         if (assets == null) return null;
         String filename = null;
         for(String asset : assets) {
-            if (!asset.isEmpty()) {
+            if (!TextUtils.isEmpty(asset)) {
                 filename = asset;
                 break;
             }
@@ -574,16 +591,21 @@ public class ThemeUtils {
     }
 
     private static class ThemedUiContext extends ContextWrapper {
-        private String mPackageName;
+        private Context mAppContext;
 
-        public ThemedUiContext(Context context, String packageName) {
+        public ThemedUiContext(Context context, Context appContext) {
             super(context);
-            mPackageName = packageName;
+            mAppContext = appContext;
+        }
+
+        @Override
+        public Context getApplicationContext() {
+            return mAppContext;
         }
 
         @Override
         public String getPackageName() {
-            return mPackageName;
+            return mAppContext.getPackageName();
         }
     }
 

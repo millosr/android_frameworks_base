@@ -573,8 +573,15 @@ public class IconPackHelper {
 
     public static boolean shouldComposeIcon(ComposedIconInfo iconInfo) {
         return iconInfo != null &&
-                (iconInfo.iconBacks != null || iconInfo.iconMask != 0 ||
-                        iconInfo.iconUpon != 0 || iconInfo.colorFilter != null);
+                (iconInfo.iconBacks != null ||
+                        iconInfo.iconMask != 0 ||
+                        iconInfo.iconUpon != 0 ||
+                        iconInfo.colorFilter != null ||
+                        iconInfo.iconPaletteBack != 0 ||
+                        iconInfo.iconRotation != 0 ||
+                        iconInfo.iconRotationVariance != 0 ||
+                        iconInfo.iconTranslationX != 0 ||
+                        iconInfo.iconTranslationY != 0);
     }
 
     public static class IconCustomizer {
@@ -613,6 +620,11 @@ public class IconPackHelper {
         public static void getValue(Resources res, int resId, TypedValue outValue,
                 Drawable baseIcon) {
             final String pkgName = res.getAssets().getAppName();
+            final ComposedIconInfo iconInfo = res.getComposedIconInfo();
+            if (iconInfo == null) {
+                // No composed icon info available so return, keeping original value
+                return;
+            }
             TypedValue tempValue = new TypedValue();
             tempValue.setTo(outValue);
             outValue.assetCookie = COMPOSED_ICON_COOKIE;
@@ -623,7 +635,6 @@ public class IconPackHelper {
 
             if (!(new File(outValue.string.toString()).exists())) {
                 // compose the icon and cache it
-                final ComposedIconInfo iconInfo = res.getComposedIconInfo();
                 int back = 0;
                 if (iconInfo.swatchType != ComposedIconInfo.SwatchType.None) {
                     back = iconInfo.iconPaletteBack;

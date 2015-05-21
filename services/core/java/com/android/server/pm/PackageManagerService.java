@@ -1654,7 +1654,9 @@ public class PackageManagerService extends IPackageManager.Stub {
                 }
             }
 
-            mBootThemeConfig = ThemeUtils.getBootThemeDirty();
+            if (!mOnlyCore) {
+                mBootThemeConfig = ThemeUtils.getBootThemeDirty();
+            }
 
             // Collect vendor overlay packages.
             // (Do this before scanning any apps.)
@@ -8017,7 +8019,8 @@ public class PackageManagerService extends IPackageManager.Stub {
                     (flags & PackageManager.MATCH_DEFAULT_ONLY) != 0, userId);
             // Remove protected Application components
             int callingUid = Binder.getCallingUid();
-            List<String> packages = Arrays.asList(getPackagesForUid(callingUid));
+            String[] pkgs = getPackagesForUid(callingUid);
+            List<String> packages = (pkgs != null) ? Arrays.asList(pkgs) : Collections.EMPTY_LIST;
             if (callingUid != Process.SYSTEM_UID &&
                     (getFlagsForUid(callingUid) & ApplicationInfo.FLAG_SYSTEM) == 0) {
                Iterator<ResolveInfo> itr = list.iterator();
