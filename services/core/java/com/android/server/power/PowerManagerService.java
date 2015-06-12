@@ -1662,7 +1662,7 @@ public final class PowerManagerService extends SystemService
                         if (now < nextTimeout) {
                             mUserActivitySummary = USER_ACTIVITY_SCREEN_DIM;
                             if (mWakefulness == WAKEFULNESS_AWAKE) {
-                                mButtonsLight.setBrightness(0);
+                                mLightsManager.turnOffButtons();
                                 mKeyboardLight.setBrightness(0);
                             }
                         }
