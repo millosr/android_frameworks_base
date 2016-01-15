@@ -40,6 +40,7 @@ public abstract class Light {
     public static final int BRIGHTNESS_MODE_LOW_PERSISTENCE = Brightness.LOW_PERSISTENCE;
 
     public abstract void setBrightness(int brightness);
+    public abstract void setBrightnessIfNotOff(int brightness);
     public abstract void setBrightness(int brightness, int brightnessMode);
     public abstract void setColor(int color);
     public abstract void setFlashing(int color, int mode, int onMS, int offMS);
