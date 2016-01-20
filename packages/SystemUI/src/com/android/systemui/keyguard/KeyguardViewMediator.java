@@ -67,6 +67,7 @@ import android.view.animation.AnimationUtils;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.internal.policy.IKeyguardDismissCallback;
+
 import com.android.internal.policy.IKeyguardDrawnCallback;
 import com.android.internal.policy.IKeyguardExitCallback;
 import com.android.internal.policy.IKeyguardStateCallback;
@@ -84,6 +85,7 @@ import com.android.systemui.SystemUI;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.UiOffloadThread;
 import com.android.systemui.classifier.FalsingManager;
+import com.android.systemui.qs.tiles.LockscreenToggleTile;
 import com.android.systemui.recents.Recents;
 import com.android.systemui.recents.misc.SystemServicesProxy;
 import com.android.systemui.statusbar.phone.FingerprintUnlockController;
@@ -150,6 +152,10 @@ public class KeyguardViewMediator extends SystemUI {
         "com.android.internal.policy.impl.PhoneWindowManager.DELAYED_KEYGUARD";
     private static final String DELAYED_LOCK_PROFILE_ACTION =
             "com.android.internal.policy.impl.PhoneWindowManager.DELAYED_LOCK";
+
+    private static final String KEYGUARD_SERVICE_ACTION_STATE_CHANGE =
+            "com.android.internal.action.KEYGUARD_SERVICE_STATE_CHANGED";
+    private static final String KEYGUARD_SERVICE_EXTRA_ACTIVE = "active";
 
     // used for handler messages
     private static final int SHOW = 1;
@@ -268,6 +274,11 @@ public class KeyguardViewMediator extends SystemUI {
      */
     private IKeyguardExitCallback mExitSecureCallback;
     private final DismissCallbackRegistry mDismissCallbackRegistry = new DismissCallbackRegistry();
+
+    /**
+     * Whether we are bound to the service delegate
+     */
+    private boolean mKeyguardBound;
 
     // the properties of the keyguard
 
@@ -687,6 +698,9 @@ public class KeyguardViewMediator extends SystemUI {
         filter.addAction(Intent.ACTION_SHUTDOWN);
         mContext.registerReceiver(mBroadcastReceiver, filter);
 
+        mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(KEYGUARD_SERVICE_ACTION_STATE_CHANGE),
+                android.Manifest.permission.CONTROL_KEYGUARD, null);
+
         mKeyguardDisplayManager = new KeyguardDisplayManager(mContext, mViewMediatorCallback);
 
         mAlarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
@@ -955,6 +969,10 @@ public class KeyguardViewMediator extends SystemUI {
 
     private void cancelDoKeyguardForChildProfilesLocked() {
         mDelayedProfileShowingSequence++;
+    }
+
+    public boolean isKeyguardBound() {
+        return mKeyguardBound;
     }
 
     /**
@@ -1533,6 +1551,11 @@ public class KeyguardViewMediator extends SystemUI {
                 synchronized (KeyguardViewMediator.this){
                     mShuttingDown = true;
                 }
+            } else if (KEYGUARD_SERVICE_ACTION_STATE_CHANGE.equals(intent.getAction())) {
+                mKeyguardBound = intent.getBooleanExtra(KEYGUARD_SERVICE_EXTRA_ACTIVE, false);
+                context.sendBroadcast(new Intent(
+                        LockscreenToggleTile.ACTION_APPLY_LOCKSCREEN_STATE)
+                        .setPackage(context.getPackageName()));
             }
         }
     };
