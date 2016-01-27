@@ -6056,8 +6056,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP:
-            case KeyEvent.KEYCODE_VOLUME_MUTE:
-            case KeyEvent.KEYCODE_CAMERA : {
+            case KeyEvent.KEYCODE_VOLUME_MUTE: {
                 if (mUseTvRouting) {
                     // On TVs volume keys never go to the foreground app
                     result &= ~ACTION_PASS_TO_USER;
@@ -6153,11 +6152,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                                     case KeyEvent.KEYCODE_VOLUME_UP:
                                         newKeyCode = KeyEvent.KEYCODE_MEDIA_NEXT;
                                         break;
-                                    case KeyEvent.KEYCODE_VOLUME_DOWN:
+                                    default:
                                         newKeyCode = KeyEvent.KEYCODE_MEDIA_PREVIOUS;
-                                        break;
-                                    default: // KeyEvent.KEYCODE_CAMERA
-                                        newKeyCode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
                                         break;
                                 }
 
@@ -6182,7 +6178,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
                     if (mUseTvRouting) {
                         dispatchDirectAudioEvent(event);
-                    } else if (mayChangeVolume && keyCode != KeyEvent.KEYCODE_CAMERA) {
+                    } else if (mayChangeVolume) {
                         // If we aren't passing to the user and no one else
                         // handled it send it to the session manager to
                         // figure out.
@@ -6193,6 +6189,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         MediaSessionLegacyHelper.getHelper(mContext).sendVolumeKeyEvent(
                                 newEvent, AudioManager.USE_DEFAULT_STREAM_TYPE, true);
                     }
+                }
+                break;
+            }
+
+            case KeyEvent.KEYCODE_CAMERA : {
+                if (down) {
+                    Intent intent;
+                    if (keyguardActive) {
+                        intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE);
+                    } else {
+                        intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+                    }
+                    isWakeKey = true;
+                    startActivityAsUser(intent, UserHandle.CURRENT_OR_SELF);
                 }
                 break;
             }
@@ -6468,7 +6478,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_MEDIA_RECORD:
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
             case KeyEvent.KEYCODE_MEDIA_AUDIO_TRACK:
-            case KeyEvent.KEYCODE_CAMERA:
                 return false;
         }
         return true;
