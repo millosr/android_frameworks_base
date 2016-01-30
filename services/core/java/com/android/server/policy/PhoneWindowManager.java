@@ -5689,6 +5689,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             case KeyEvent.KEYCODE_CAMERA : {
+                if (!interactive) {
+                    isWakeKey = true;
+                }
+
                 if (down) {
                     mKeysIsLongPress = false;
                     scheduleLongPressKeyEvent(event, KeyEvent.KEYCODE_CAMERA);
