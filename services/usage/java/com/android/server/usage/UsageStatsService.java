@@ -207,8 +207,7 @@ public class UsageStatsService extends SystemService implements
         getContext().registerReceiverAsUser(new PackageReceiver(), UserHandle.ALL, packageFilter,
                 null, mHandler);
 
-        mAppIdleEnabled = getContext().getResources().getBoolean(
-                com.android.internal.R.bool.config_enableAutoPowerModes);
+        mAppIdleEnabled = SystemProperties.getBoolean("persist.sys.autopower", true);
         if (mAppIdleEnabled) {
             IntentFilter deviceStates = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             deviceStates.addAction(BatteryManager.ACTION_DISCHARGING);
