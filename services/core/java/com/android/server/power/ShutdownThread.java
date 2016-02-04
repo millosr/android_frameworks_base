@@ -109,6 +109,9 @@ public final class ShutdownThread extends Thread {
     // Indicates whether we should stay in safe mode until ro.build.date.utc is newer than this
     public static final String AUDIT_SAFEMODE_PROPERTY = "persist.sys.audit_safemode";
 
+    // Indicates whether we are rebooting to flash
+    public static final String REBOOT_FLASH_PROPERTY = "sys.reboot.flash.requested";
+
     // static instance of this thread
     private static final ShutdownThread sInstance = new ShutdownThread();
 
@@ -296,6 +299,13 @@ public final class ShutdownThread extends Thread {
         mRebootSafeMode = false;
         mRebootHasProgressBar = false;
         mReason = reason;
+
+        if (PowerManager.REBOOT_RECOVERY.equals(reason)) {
+            mRebootUpdate = SystemProperties.getBoolean(REBOOT_FLASH_PROPERTY, false);
+        } else {
+            mRebootUpdate = false;
+        }
+
         mRebootAdvMode = false;
         shutdownInner(context, confirm);
     }
