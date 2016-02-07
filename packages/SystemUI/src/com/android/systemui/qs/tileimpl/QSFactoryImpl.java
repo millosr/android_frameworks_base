@@ -22,6 +22,7 @@ import com.android.systemui.R;
 import com.android.systemui.plugins.qs.*;
 import com.android.systemui.plugins.qs.QSTileView;
 import com.android.systemui.qs.external.CustomTile;
+import com.android.systemui.qs.tiles.AdbOverNetworkTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AmbientDisplayTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
@@ -81,6 +82,7 @@ public class QSFactoryImpl implements QSFactory {
         else if (tileSpec.equals("volume_panel")) return new VolumeTile(mHost);
         else if (tileSpec.equals("fastcharge")) return new FastChargeTile(mHost);
         else if (tileSpec.equals("lockscreen")) return  new LockscreenToggleTile(mHost);
+        else if (tileSpec.equals("network_adb")) return new AdbOverNetworkTile(mHost);
         // Intent tiles.
         else if (tileSpec.startsWith(IntentTile.PREFIX)) return IntentTile.create(mHost, tileSpec);
         else if (tileSpec.startsWith(CustomTile.PREFIX)) return CustomTile.create(mHost, tileSpec);
