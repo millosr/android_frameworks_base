@@ -119,8 +119,9 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_default" translatable="false">
-        wifi,bt,inversion,dnd,cell,airplane,rotation,flashlight,location,cast,hotspot,fastcharge,screencolor,lockscreen,network_adb
+        wifi,bt,inversion,dnd,cell,airplane,rotation,flashlight,location,cast,hotspot
     </string>
+    <!--TODO add fastcharge,screencolor,lockscreen,network_adb-->
 
     <!-- The tiles to display in QuickSettings -->
     <string name="quick_settings_tiles" translatable="false">default</string>

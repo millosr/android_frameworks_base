@@ -200,10 +200,10 @@ public class QsTuner extends Fragment implements Callback {
         else if (spec.equals("location")) return R.string.quick_settings_location_label;
         else if (spec.equals("cast")) return R.string.quick_settings_cast_title;
         else if (spec.equals("hotspot")) return R.string.quick_settings_hotspot_label;
-        else if (spec.equals("fastcharge")) return R.string.quick_settings_fastcharge_label;
-        else if (spec.equals("screencolor")) return R.string.quick_settings_screen_color_label;
-        else if (spec.equals("lockscreen")) return R.string.quick_settings_lockscreen_label;
-        else if (spec.equals("network_adb")) return R.string.quick_settings_network_adb_label;
+        //else if (spec.equals("fastcharge")) return R.string.quick_settings_fastcharge_label;
+        //else if (spec.equals("screencolor")) return R.string.quick_settings_screen_color_label;
+        //else if (spec.equals("lockscreen")) return R.string.quick_settings_lockscreen_label;
+        //else if (spec.equals("network_adb")) return R.string.quick_settings_network_adb_label;
         return 0;
     }
 
@@ -447,10 +447,10 @@ public class QsTuner extends Fragment implements Callback {
             else if (mSpec.equals("location")) return R.drawable.ic_signal_location_enable;
             else if (mSpec.equals("cast")) return R.drawable.ic_qs_cast_on;
             else if (mSpec.equals("hotspot")) return R.drawable.ic_hotspot_enable;
-            else if (mSpec.equals("fastcharge")) return R.drawable.ic_qs_fastcharge_on;
-            else if (mSpec.equals("screencolor")) return R.drawable.ic_qs_screen_color_night;
-            else if (mSpec.equals("lockscreen")) return R.drawable.ic_qs_lock_screen_on;
-            else if (mSpec.equals("network_adb")) return R.drawable.ic_qs_network_adb_on;
+            //else if (mSpec.equals("fastcharge")) return R.drawable.ic_qs_fastcharge_on;
+            //else if (mSpec.equals("screencolor")) return R.drawable.ic_qs_screen_color_night;
+            //else if (mSpec.equals("lockscreen")) return R.drawable.ic_qs_lock_screen_on;
+            //else if (mSpec.equals("network_adb")) return R.drawable.ic_qs_network_adb_on;
             return R.drawable.android;
         }
 
