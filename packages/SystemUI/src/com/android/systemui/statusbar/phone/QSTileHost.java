@@ -267,7 +267,7 @@ public class QSTileHost implements QSTile.Host, Tunable {
         //else if (tileSpec.equals("fastcharge")) return new FastChargeTile(this);
         //else if (tileSpec.equals("screencolor")) return new ScreenColorTile(this);
         //else if (tileSpec.equals("lockscreen")) return  new LockscreenToggleTile(this);
-        //else if (tileSpec.equals("network_adb")) return new AdbOverNetworkTile(this);
+        else if (tileSpec.equals("network_adb")) return new AdbOverNetworkTile(this);
         else if (tileSpec.startsWith(IntentTile.PREFIX)) return IntentTile.create(this,tileSpec);
         else throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
     }
