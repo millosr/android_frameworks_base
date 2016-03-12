@@ -668,8 +668,14 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(vendingPackage, PHONE_PERMISSIONS, userId);
                 grantRuntimePermissionsLPw(vendingPackage, LOCATION_PERMISSIONS, userId);
                 grantRuntimePermissionsLPw(vendingPackage, SMS_PERMISSIONS, userId);
-            }	
-				
+            }
+
+            // ROM Updater
+            PackageParser.Package romUpdaterPackage = getSystemPackageLPr("com.cyanogenmod.updater");
+            if (romUpdaterPackage != null) {
+                grantRuntimePermissionsLPw(romUpdaterPackage, STORAGE_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(romUpdaterPackage, PHONE_PERMISSIONS, userId);
+            }
 			
             mService.mSettings.onDefaultRuntimePermissionsGrantedLPr(userId);
         }
