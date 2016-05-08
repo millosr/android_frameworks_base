@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.util.AttributeSet;
 import android.view.ActionMode;
 import android.view.InputDevice;
@@ -91,7 +92,7 @@ public class StatusBarWindowView extends FrameLayout {
     private boolean mTouchCancelled;
     private boolean mTouchActive;
 
-    private boolean mDoubleTapToSleepEnabled = true;
+    private boolean mDoubleTapToSleepEnabled;
     private int mStatusBarHeaderHeight;
     private GestureDetector mDoubleTapGesture;
 
@@ -108,16 +109,19 @@ public class StatusBarWindowView extends FrameLayout {
         mStatusBarHeaderHeight = context
                 .getResources().getDimensionPixelSize(R.dimen.status_bar_header_height);
 
-        mDoubleTapGesture = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-                if(pm != null)
-                    pm.goToSleep(e.getEventTime());
-                return true;
-            }
-        });
-
+        mDoubleTapToSleepEnabled = SystemProperties.getBoolean("persist.sys.statusbar.dt2s", true);
+        if (mDoubleTapToSleepEnabled) {
+            mDoubleTapGesture = new GestureDetector(mContext, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    PowerManager pm = mContext.getSystemService(PowerManager.class);
+                    if(pm != null) {
+                        pm.goToSleep(e.getEventTime());
+                    }
+                    return true;
+                }
+            });
+        }
     }
 
     @Override
