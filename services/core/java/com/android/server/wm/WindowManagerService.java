@@ -639,6 +639,8 @@ public class WindowManagerService extends IWindowManager.Stub
     float mAnimatorDurationScaleSetting = 1.0f;
     boolean mAnimationsDisabled = false;
 
+    float mAnimationScaleMultiplier = 0.5f;
+
     final InputManagerService mInputManager;
     final DisplayManagerInternal mDisplayManagerInternal;
     final DisplayManager mDisplayManager;
@@ -5571,11 +5573,11 @@ public class WindowManagerService extends IWindowManager.Stub
     }
 
     public float getWindowAnimationScaleLocked() {
-        return mAnimationsDisabled ? 0 : mWindowAnimationScaleSetting;
+        return mAnimationsDisabled ? 0 : mWindowAnimationScaleSetting * mAnimationScaleMultiplier;
     }
 
     public float getTransitionAnimationScaleLocked() {
-        return mAnimationsDisabled ? 0 : mTransitionAnimationScaleSetting;
+        return mAnimationsDisabled ? 0 : mTransitionAnimationScaleSetting * mAnimationScaleMultiplier;
     }
 
     @Override
@@ -5597,7 +5599,7 @@ public class WindowManagerService extends IWindowManager.Stub
     @Override
     public float getCurrentAnimatorScale() {
         synchronized(mWindowMap) {
-            return mAnimationsDisabled ? 0 : mAnimatorDurationScaleSetting;
+            return mAnimationsDisabled ? 0 : mAnimatorDurationScaleSetting * mAnimationScaleMultiplier;
         }
     }
 
