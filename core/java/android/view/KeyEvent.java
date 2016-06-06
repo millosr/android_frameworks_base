@@ -761,19 +761,6 @@ public class KeyEvent extends InputEvent implements Parcelable {
      * Backs out one level of a navigation hierarchy or collapses the item that currently has
      * focus. */
     public static final int KEYCODE_NAVIGATE_OUT    = 263;
-    /** Key code constant: Primary stem key for Wear
-     * Main power/reset button on watch.
-     * @hide */
-    public static final int KEYCODE_STEM_PRIMARY = 264;
-    /** Key code constant: Generic stem key 1 for Wear
-     * @hide */
-    public static final int KEYCODE_STEM_1 = 265;
-    /** Key code constant: Generic stem key 2 for Wear
-     * @hide */
-    public static final int KEYCODE_STEM_2 = 266;
-    /** Key code constant: Generic stem key 3 for Wear
-     * @hide */
-    public static final int KEYCODE_STEM_3 = 267;
     /** Key code constant: Skip forward media key. */
     public static final int KEYCODE_MEDIA_SKIP_FORWARD = 272;
     /** Key code constant: Skip backward media key. */
@@ -784,11 +771,8 @@ public class KeyEvent extends InputEvent implements Parcelable {
     /** Key code constant: Step backward media key.
      * Steps media backward, one frame at a time. */
     public static final int KEYCODE_MEDIA_STEP_BACKWARD = 275;
-    /** Key code constant: put device to sleep unless a wakelock is held.
-     * @hide */
-    public static final int KEYCODE_SOFT_SLEEP = 276;
 
-    private static final int LAST_KEYCODE = KEYCODE_SOFT_SLEEP;
+    private static final int LAST_KEYCODE = KEYCODE_MEDIA_STEP_BACKWARD;
 
     // NOTE: If you add a new keycode here you must also add it to:
     //  isSystem()
@@ -1846,9 +1830,6 @@ public class KeyEvent extends InputEvent implements Parcelable {
             case KeyEvent.KEYCODE_MENU:
             case KeyEvent.KEYCODE_WAKEUP:
             case KeyEvent.KEYCODE_PAIRING:
-            case KeyEvent.KEYCODE_STEM_1:
-            case KeyEvent.KEYCODE_STEM_2:
-            case KeyEvent.KEYCODE_STEM_3:
                 return true;
         }
         return false;

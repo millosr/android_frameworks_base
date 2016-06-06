@@ -59,8 +59,8 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
     protected NetworkControllerImpl mNetworkController;
     protected MobileSignalController mMobileSignalController;
     protected PhoneStateListener mPhoneStateListener;
-    protected SignalStrength mSignalStrength;
-    protected ServiceState mServiceState;
+    private SignalStrength mSignalStrength;
+    private ServiceState mServiceState;
     protected ConnectivityManager mMockCm;
     protected WifiManager mMockWm;
     protected SubscriptionManager mMockSm;
@@ -234,7 +234,7 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
         mPhoneStateListener.onSignalStrengthsChanged(mSignalStrength);
     }
 
-    protected void updateServiceState() {
+    private void updateServiceState() {
         Log.d(TAG, "Sending Service State: " + mServiceState);
         mPhoneStateListener.onServiceStateChanged(mServiceState);
     }
@@ -245,7 +245,6 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
     }
 
     public void updateDataConnectionState(int dataState, int dataNetType) {
-        when(mServiceState.getDataNetworkType()).thenReturn(dataNetType);
         mPhoneStateListener.onDataConnectionStateChanged(dataState, dataNetType);
     }
 
