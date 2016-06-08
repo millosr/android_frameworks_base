@@ -37,6 +37,7 @@ import com.android.systemui.qs.tiles.FastChargeTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
+import com.android.systemui.qs.tiles.ImmersiveModeTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.LockscreenToggleTile;
@@ -85,6 +86,7 @@ public class QSFactoryImpl implements QSFactory {
         else if (tileSpec.equals("lockscreen")) return  new LockscreenToggleTile(mHost);
         else if (tileSpec.equals("network_adb")) return new AdbOverNetworkTile(mHost);
         else if (tileSpec.equals("caffeine")) return new CaffeineTile(mHost);
+        else if (tileSpec.equals("immersive_mode")) return new ImmersiveModeTile(mHost);
         // Intent tiles.
         else if (tileSpec.startsWith(IntentTile.PREFIX)) return IntentTile.create(mHost, tileSpec);
         else if (tileSpec.startsWith(CustomTile.PREFIX)) return CustomTile.create(mHost, tileSpec);
