@@ -57,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/header_battery_margin_keyguard"
+            android:layout_marginTop="1dp"
             android:paddingEnd="@dimen/battery_level_padding_end"
             android:textColor="#ffffff"
             android:visibility="gone"
