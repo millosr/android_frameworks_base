@@ -103,6 +103,7 @@ import com.android.keyguard.KeyguardHostView.OnDismissAction;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.keyguard.ViewMediatorCallback;
+import com.android.systemui.BatteryLevelTextView;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogConstants;
@@ -292,7 +293,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private boolean mWakeUpComingFromTouch;
     private PointF mWakeUpTouchLocation;
     private boolean mScreenTurningOn;
-	private TextView mBatteryLevel;
 
     int mPixelFormat;
     Object mQueueLock = new Object();
@@ -809,7 +809,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         R.id.keyguard_indication_text),
                 mKeyguardBottomArea.getLockIcon());
         mKeyguardBottomArea.setKeyguardIndicationController(mKeyguardIndicationController);
-        mBatteryLevel = (TextView) mStatusBarView.findViewById(R.id.battery_level_text);
 
         // set the inital view visibility
         setAreThereNotifications();
@@ -835,19 +834,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
             @Override
             public void onBatteryLevelChanged(int level, boolean pluggedIn, boolean charging) {
-                String percentage = NumberFormat.getPercentInstance().format((double) level / 100.0);
-                mBatteryLevel.setText(percentage);
+                // noop
             }
-
             @Override
             public void onBatteryStyleChanged(int style, int percentMode) {
-                boolean batteryLevelVisible = (style == BatteryController.STYLE_TEXT)
-                        || (style != BatteryController.STYLE_GONE
-                        && percentMode == BatteryController.PERCENTAGE_MODE_OUTSIDE);
-                mBatteryLevel.setVisibility(batteryLevelVisible ? View.VISIBLE : View.GONE);
+                // noop
             }
         });
-
         mNetworkController = new NetworkControllerImpl(mContext, mHandlerThread.getLooper());
         mHotspotController = new HotspotControllerImpl(mContext);
         mBluetoothController = new BluetoothControllerImpl(mContext, mHandlerThread.getLooper());
@@ -927,8 +920,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mUserInfoController.reloadUserInfo();
 
         mHeader.setBatteryController(mBatteryController);
-        ((BatteryMeterView) mStatusBarView.findViewById(R.id.battery)).setBatteryController(
-                mBatteryController);
+        BatteryMeterView batteryMeterView =
+                ((BatteryMeterView) mStatusBarView.findViewById(R.id.battery));
+        batteryMeterView.setBatteryController(mBatteryController);
+        batteryMeterView.setAnimationsEnabled(false);
+        ((BatteryLevelTextView) mStatusBarView.findViewById(R.id.battery_level_text))
+                .setBatteryController(mBatteryController);
         mKeyguardStatusBar.setBatteryController(mBatteryController);
         mHeader.setNextAlarmController(mNextAlarmController);
 
