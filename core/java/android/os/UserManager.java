@@ -673,6 +673,18 @@ public class UserManager {
     public static final String EXTRA_USER_ACCOUNT_OPTIONS
             = "android.os.extra.USER_ACCOUNT_OPTIONS";
 
+    /**
+     * Specifies if the user is not allowed to use SU commands.
+     * The default value is <code>false</code>.
+     *
+     * <p/>Key for user restrictions.
+     * <p/>Type: Boolean
+     * @see #setUserRestrictions(Bundle)
+     * @see #getUserRestrictions()
+     * @hide
+     */
+    public static final String DISALLOW_SU = "no_su";
+
     /** @hide */
     public static final int PIN_VERIFICATION_FAILED_INCORRECT = -3;
     /** @hide */
@@ -1266,10 +1278,19 @@ public class UserManager {
     public UserInfo createGuest(Context context, String name) {
         UserInfo guest = null;
         try {
-            guest = mService.createUser(name, UserInfo.FLAG_GUEST);
+            guest = createUser(name, UserInfo.FLAG_GUEST);
             if (guest != null) {
                 Settings.Secure.putStringForUser(context.getContentResolver(),
                         Settings.Secure.SKIP_FIRST_USE_HINTS, "1", guest.id);
+                try {
+                    Bundle guestRestrictions = mService.getDefaultGuestRestrictions();
+                    guestRestrictions.putBoolean(DISALLOW_SMS, true);
+                    guestRestrictions.putBoolean(DISALLOW_INSTALL_UNKNOWN_SOURCES, true);
+                    guestRestrictions.putBoolean(DISALLOW_SU, true);
+                    mService.setUserRestrictions(guestRestrictions, guest.id);
+                } catch (RemoteException re) {
+                    Log.w(TAG, "Could not update guest restrictions");
+                }
             }
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();
@@ -1372,6 +1393,12 @@ public class UserManager {
             intent.putExtra(EXTRA_USER_ACCOUNT_OPTIONS, accountOptions);
         }
         return intent;
+    }
+
+    private static void addDefaultUserRestrictions(Bundle restrictions) {
+        restrictions.putBoolean(DISALLOW_OUTGOING_CALLS, true);
+        restrictions.putBoolean(DISALLOW_SMS, true);
+        restrictions.putBoolean(DISALLOW_SU, true);
     }
 
     /**
