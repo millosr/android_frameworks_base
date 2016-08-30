@@ -21,7 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.android.internal.logging.MetricsConstants;
+import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSTile;
 
@@ -33,13 +33,23 @@ public class FastChargeTile extends QSTile<QSTile.BooleanState> {
     }
 
     @Override
-    protected BooleanState newTileState() {
+    public BooleanState newTileState() {
         return new BooleanState();
+    }
+
+    @Override
+    public Intent getLongClickIntent() {
+        return null;
     }
 
     @Override
     protected void handleClick() {
         toggleState();
+    }
+
+    @Override
+    public CharSequence getTileLabel() {
+        return mContext.getString(R.string.quick_settings_fastcharge_label);
     }
 
     protected void toggleState() {
@@ -55,8 +65,8 @@ public class FastChargeTile extends QSTile<QSTile.BooleanState> {
     protected void handleUpdateState(BooleanState state, Object arg) {
         String fastChargeState = FileUtils.readOneLine(FAST_CHARGE_FILE);
 
-        state.visible = (fastChargeState != null);
-        state.value = state.visible && (fastChargeState.contentEquals("1"));
+        // state.visible = (fastChargeState != null);
+        state.value = (fastChargeState != null) && fastChargeState.contentEquals("1");
         state.icon = ResourceIcon.get(state.value ?
                 R.drawable.ic_qs_fastcharge_on : R.drawable.ic_qs_fastcharge_off);
         state.label = mContext.getString(state.value
@@ -65,7 +75,7 @@ public class FastChargeTile extends QSTile<QSTile.BooleanState> {
 
     @Override
     public int getMetricsCategory() {
-        return MetricsConstants.QS_PANEL;
+        return MetricsEvent.QS_PANEL;
     }
 
     @Override

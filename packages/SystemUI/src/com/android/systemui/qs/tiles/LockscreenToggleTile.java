@@ -24,6 +24,7 @@ import android.content.IntentFilter;
 
 import android.widget.Toast;
 import com.android.internal.logging.MetricsLogger;
+import com.android.internal.logging.MetricsProto.MetricsEvent;
 import com.android.systemui.R;
 import com.android.systemui.SystemUIApplication;
 import com.android.systemui.keyguard.KeyguardViewMediator;
@@ -79,8 +80,13 @@ public class LockscreenToggleTile extends QSTile<QSTile.BooleanState>
     }
 
     @Override
-    protected BooleanState newTileState() {
+    public BooleanState newTileState() {
         return new BooleanState();
+    }
+
+    @Override
+    public Intent getLongClickIntent() {
+        return null;
     }
 
     @Override
@@ -96,6 +102,11 @@ public class LockscreenToggleTile extends QSTile<QSTile.BooleanState>
     }
 
     @Override
+    public CharSequence getTileLabel() {
+        return mContext.getString(R.string.quick_settings_lockscreen_label);
+    }
+
+    @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         final boolean lockscreenEnforced = mKeyguardViewMediator.lockscreenEnforcedByDevicePolicy();
         final boolean lockscreenEnabled = lockscreenEnforced
@@ -103,7 +114,7 @@ public class LockscreenToggleTile extends QSTile<QSTile.BooleanState>
                 || mKeyguardViewMediator.getKeyguardEnabledInternal();
 
         state.value = lockscreenEnabled;
-        state.visible = !mKeyguard.isShowing() || !mKeyguard.isSecure();
+        // state.visible = !mKeyguard.isShowing() || !mKeyguard.isSecure();
         state.label = mContext.getString(lockscreenEnforced
                 ? R.string.quick_settings_lockscreen_label_enforced
                 : R.string.quick_settings_lockscreen_label);
@@ -120,7 +131,7 @@ public class LockscreenToggleTile extends QSTile<QSTile.BooleanState>
 
     @Override
     public int getMetricsCategory() {
-        return MetricsLogger.QS_PANEL;
+        return MetricsEvent.QS_PANEL;
     }
 
     @Override

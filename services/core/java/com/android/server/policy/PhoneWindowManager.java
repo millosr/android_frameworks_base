@@ -207,6 +207,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     static final int LONG_PRESS_HOME_ASSIST = 2;
     static final int LAST_LONG_PRESS_HOME_BEHAVIOR = LONG_PRESS_HOME_ASSIST;
 
+    //Qemu Hw Mainkeys
+    static final int QEMU_HW_MAINKEYS_MUSIC = 1;
+
     static final int DOUBLE_TAP_HOME_NOTHING = 0;
     static final int DOUBLE_TAP_HOME_RECENT_SYSTEM_UI = 1;
 
