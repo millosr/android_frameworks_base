@@ -1282,15 +1282,7 @@ public class UserManager {
             if (guest != null) {
                 Settings.Secure.putStringForUser(context.getContentResolver(),
                         Settings.Secure.SKIP_FIRST_USE_HINTS, "1", guest.id);
-                try {
-                    Bundle guestRestrictions = mService.getDefaultGuestRestrictions();
-                    guestRestrictions.putBoolean(DISALLOW_SMS, true);
-                    guestRestrictions.putBoolean(DISALLOW_INSTALL_UNKNOWN_SOURCES, true);
-                    guestRestrictions.putBoolean(DISALLOW_SU, true);
-                    mService.setUserRestrictions(guestRestrictions, guest.id);
-                } catch (RemoteException re) {
-                    Log.w(TAG, "Could not update guest restrictions");
-                }
+                mService.setUserRestriction(DISALLOW_SU, true, guest.id);
             }
         } catch (RemoteException re) {
             throw re.rethrowFromSystemServer();

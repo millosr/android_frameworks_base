@@ -2466,6 +2466,7 @@
   <java-symbol type="string" name="status_bar_cast" />
   <java-symbol type="string" name="status_bar_hotspot" />
   <java-symbol type="string" name="status_bar_location" />
+  <java-symbol type="string" name="status_bar_su" />
   <java-symbol type="string" name="status_bar_bluetooth" />
   <java-symbol type="string" name="status_bar_nfc" />
   <java-symbol type="string" name="status_bar_tty" />

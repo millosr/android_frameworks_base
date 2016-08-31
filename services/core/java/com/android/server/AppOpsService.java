@@ -1162,8 +1162,7 @@ public class AppOpsService extends IAppOpsService.Stub {
     }
 
     @Override
-    public int startOperation(IBinder token, int code, int uid,
-            String packageName) {
+    public int startOperation(IBinder token, int code, int uid, String packageName) {
         final PermissionDialogReq req;
         verifyIncomingUid(uid);
         verifyIncomingOp(code);
@@ -1248,9 +1247,6 @@ public class AppOpsService extends IAppOpsService.Stub {
             }
             return AppOpsManager.MODE_ALLOWED;
         }
-        int result = req.get();
-        broadcastOpIfNeeded(code);
-        return result;
     }
 
     @Override
@@ -2576,7 +2572,7 @@ public class AppOpsService extends IAppOpsService.Stub {
         if (repCbs != null) {
             for (int i = 0; i < repCbs.size(); i++) {
                 try {
-                    repCbs.get(i).mCallback.opChanged(switchCode, packageName);
+                    repCbs.get(i).mCallback.opChanged(switchCode, uid, packageName);
                 } catch (RemoteException e) {
                 }
             }

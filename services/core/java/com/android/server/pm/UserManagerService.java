@@ -1043,6 +1043,7 @@ public class UserManagerService extends IUserManager.Stub {
                 mGuestRestrictions.putBoolean(UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES, true);
                 mGuestRestrictions.putBoolean(UserManager.DISALLOW_OUTGOING_CALLS, true);
                 mGuestRestrictions.putBoolean(UserManager.DISALLOW_SMS, true);
+                mGuestRestrictions.putBoolean(UserManager.DISALLOW_SU, true);
             }
         }
     }
@@ -1231,15 +1232,6 @@ public class UserManagerService extends IUserManager.Stub {
     @Override
     public Bundle getUserRestrictions(int userId) {
         return UserRestrictionsUtils.clone(getEffectiveUserRestrictions(userId));
-    }
-
-    private void initDefaultGuestRestrictions() {
-        if (mGuestRestrictions.isEmpty()) {
-            mGuestRestrictions.putBoolean(UserManager.DISALLOW_OUTGOING_CALLS, true);
-            mGuestRestrictions.putBoolean(UserManager.DISALLOW_SMS, true);
-            mGuestRestrictions.putBoolean(UserManager.DISALLOW_CONFIG_WIFI, true);
-            mGuestRestrictions.putBoolean(UserManager.DISALLOW_SU, true);
-        }
     }
 
     @Override
@@ -2015,7 +2007,7 @@ public class UserManagerService extends IUserManager.Stub {
         serializer.endTag(null, TAG_RESTRICTIONS);
     }
 
-    private UserInfo readUserLP(int id) {
+    private UserData readUserLP(int id) {
         int flags = 0;
         int serialNumber = id;
         String name = null;

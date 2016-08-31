@@ -186,8 +186,8 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
         mHotspot.addCallback(mHotspotCallback);
 
         // su
-        mService.setIcon(mSlotSu, R.drawable.stat_sys_su, null);
-        mService.setIconVisibility(mSlotSu, false);
+        mIconController.setIcon(mSlotSu, R.drawable.stat_sys_su, null);
+        mIconController.setIconVisibility(mSlotSu, false);
         mSuController.addCallback(mSuCallback);
 
         // managed profile
@@ -465,7 +465,7 @@ public class PhoneStatusBarPolicy implements Callback, RotationLockController.Ro
     };
 
     private void updateSu() {
-        mService.setIconVisibility(mSlotSu, mSuController.hasActiveSessions());
+        mIconController.setIconVisibility(mSlotSu, mSuController.hasActiveSessions());
     }
 
     private final CastController.Callback mCastCallback = new CastController.Callback() {
