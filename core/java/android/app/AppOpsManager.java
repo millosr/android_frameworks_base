@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2016 nAOSProm
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,6 +104,13 @@ public class AppOpsManager {
      * with appop permissions, and callers must explicitly check for it and deal with it.
      */
     public static final int MODE_DEFAULT = 3;
+
+    /**
+     * @hide Result from {@link #checkOp}, {@link #noteOp}, {@link #startOp}:
+     * AppOps Service should show a dialog box on screen to get user
+     * permission.
+     */
+    public static final int MODE_ASK = 4;
 
     // when adding one of these:
     //  - increment _NUM_OP
@@ -252,8 +260,10 @@ public class AppOpsManager {
     public static final int OP_INSTANT_APP_START_FOREGROUND = 68;
     /** @hide Answer incoming phone calls */
     public static final int OP_ANSWER_PHONE_CALLS = 69;
+    /** @hide Superuser. */
+    public static final int OP_SU = 70;
     /** @hide */
-    public static final int _NUM_OP = 70;
+    public static final int _NUM_OP = 71;
 
     /** Access to coarse location information. */
     public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
@@ -365,6 +375,9 @@ public class AppOpsManager {
     /** Answer incoming phone calls */
     public static final String OPSTR_ANSWER_PHONE_CALLS
             = "android:answer_phone_calls";
+    /** @hide Superuser. */
+    public static final String OPSTR_SU
+            = "android:su";
 
     // Warning: If an permission is added here it also has to be added to
     // com.android.packageinstaller.permission.utils.EventLogger
@@ -492,7 +505,8 @@ public class AppOpsManager {
             OP_REQUEST_INSTALL_PACKAGES,
             OP_PICTURE_IN_PICTURE,
             OP_INSTANT_APP_START_FOREGROUND,
-            OP_ANSWER_PHONE_CALLS
+            OP_ANSWER_PHONE_CALLS,
+            OP_SU,
     };
 
     /**
@@ -570,6 +584,7 @@ public class AppOpsManager {
             OPSTR_PICTURE_IN_PICTURE,
             OPSTR_INSTANT_APP_START_FOREGROUND,
             OPSTR_ANSWER_PHONE_CALLS,
+            OPSTR_SU,
     };
 
     /**
@@ -647,6 +662,7 @@ public class AppOpsManager {
             "PICTURE_IN_PICTURE",
             "INSTANT_APP_START_FOREGROUND",
             "ANSWER_PHONE_CALLS",
+            "SU",
     };
 
     /**
@@ -724,6 +740,7 @@ public class AppOpsManager {
             null, // no permission for entering picture-in-picture on hide
             Manifest.permission.INSTANT_APP_FOREGROUND_SERVICE,
             Manifest.permission.ANSWER_PHONE_CALLS,
+            null // no standard permission for superuser
     };
 
     /**
@@ -802,6 +819,7 @@ public class AppOpsManager {
             null, // ENTER_PICTURE_IN_PICTURE_ON_HIDE
             null, // INSTANT_APP_START_FOREGROUND
             null, // ANSWER_PHONE_CALLS
+            UserManager.DISALLOW_SU, // SU
     };
 
     /**
@@ -879,6 +897,7 @@ public class AppOpsManager {
             false, // ENTER_PICTURE_IN_PICTURE_ON_HIDE
             false, // INSTANT_APP_START_FOREGROUND
             false, // ANSWER_PHONE_CALLS
+            false, // SU
     };
 
     /**
@@ -955,6 +974,7 @@ public class AppOpsManager {
             AppOpsManager.MODE_ALLOWED,  // OP_PICTURE_IN_PICTURE
             AppOpsManager.MODE_DEFAULT,  // OP_INSTANT_APP_START_FOREGROUND
             AppOpsManager.MODE_ALLOWED, // ANSWER_PHONE_CALLS
+            AppOpsManager.MODE_ASK, // OP_SU
     };
 
     /**
@@ -1035,6 +1055,7 @@ public class AppOpsManager {
             false, // OP_PICTURE_IN_PICTURE
             false,
             false, // ANSWER_PHONE_CALLS
+            false
     };
 
     /**
