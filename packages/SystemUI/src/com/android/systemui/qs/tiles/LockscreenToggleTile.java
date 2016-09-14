@@ -21,8 +21,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-
+import android.service.quicksettings.Tile;
 import android.widget.Toast;
+
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
@@ -63,7 +64,7 @@ public class LockscreenToggleTile extends QSTileImpl<BooleanState>
     public LockscreenToggleTile(QSHost host) {
         super(host);
 
-        mKeyguard = mKeyguard = Dependency.get(KeyguardMonitor.class);
+        mKeyguard = Dependency.get(KeyguardMonitor.class);
         mKeyguardViewMediator =
                 ((SystemUIApplication)
                         mContext.getApplicationContext()).getComponent(KeyguardViewMediator.class);
@@ -96,9 +97,11 @@ public class LockscreenToggleTile extends QSTileImpl<BooleanState>
 
     @Override
     protected void handleClick() {
-        mVolatileState = !mVolatileState;
-        applyLockscreenState();
-        refreshState();
+        if (!mKeyguard.isShowing() || !mKeyguard.isSecure()) {
+            mVolatileState = !mVolatileState;
+            applyLockscreenState();
+            refreshState();
+	}
     }
 
     @Override
@@ -118,20 +121,20 @@ public class LockscreenToggleTile extends QSTileImpl<BooleanState>
                 || mVolatileState
                 || mKeyguardViewMediator.getKeyguardEnabledInternal();
 
-        state.value = lockscreenEnabled;
-        // state.visible = !mKeyguard.isShowing() || !mKeyguard.isSecure();
-        state.label = mContext.getString(lockscreenEnforced
+        state.label = mHost.getContext().getString(lockscreenEnforced
                 ? R.string.quick_settings_lockscreen_label_enforced
                 : R.string.quick_settings_lockscreen_label);
-        if (lockscreenEnabled) {
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_lock_screen_on);
-            state.contentDescription = mContext.getString(
-                    R.string.accessibility_quick_settings_lock_screen_on);
-        } else {
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_lock_screen_off);
-            state.contentDescription = mContext.getString(
-                    R.string.accessibility_quick_settings_lock_screen_off);
-        }
+        state.contentDescription = mHost.getContext().getString(lockscreenEnabled
+                ? R.string.accessibility_quick_settings_lock_screen_on
+                : R.string.accessibility_quick_settings_lock_screen_off);
+
+        state.value = lockscreenEnabled;
+        state.icon = ResourceIcon.get(lockscreenEnabled
+                ? R.drawable.ic_qs_lock_screen_on
+                : R.drawable.ic_qs_lock_screen_off);
+
+        state.state = (mKeyguard.isShowing() && mKeyguard.isSecure()) ? Tile.STATE_UNAVAILABLE
+            : Tile.STATE_ACTIVE;
     }
 
     @Override
