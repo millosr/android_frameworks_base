@@ -27,6 +27,7 @@ import android.net.wifi.WifiManager;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.service.quicksettings.Tile;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.systemui.Dependency;
@@ -35,20 +36,31 @@ import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
+import com.android.systemui.statusbar.policy.KeyguardMonitor;
 
 import java.net.InetAddress;
 
-public class AdbOverNetworkTile extends QSTileImpl<BooleanState> {
+public class AdbOverNetworkTile extends QSTileImpl<BooleanState>
+        implements KeyguardMonitor.Callback {
+
     private static final String ADB_TCP_PROPERTY = "service.adb.tcp.port";
     private static final int ADB_TCP_ON = 5555;
     private static final int ADB_TCP_OFF = -1;
 
     private boolean mListening;
+    private KeyguardMonitor mKeyguard;
 
     private final ActivityStarter mActivityStarter;
 
     private static final Intent SETTINGS_DEVELOPMENT =
             new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
+
+    public AdbOverNetworkTile(QSHost host) {
+        super(host);
+
+        mActivityStarter = Dependency.get(ActivityStarter.class);
+        mKeyguard = Dependency.get(KeyguardMonitor.class);
+    }
 
     @Override
     public BooleanState newTileState() {
@@ -62,8 +74,13 @@ public class AdbOverNetworkTile extends QSTileImpl<BooleanState> {
 
     @Override
     protected void handleClick() {
-        // toggle adb network support
-        toggleState();
+        if (!mKeyguard.isShowing() || !mKeyguard.isSecure()) {
+            if (isAdbEnabled()) {
+                toggleState();
+            }
+        } else if (isAdbEnabled() && isAdbNetworkEnabled()) {
+            toggleState();
+        }
     }
 
     @Override
@@ -88,11 +105,8 @@ public class AdbOverNetworkTile extends QSTileImpl<BooleanState> {
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        //state.visible = isAdbEnabled();
-        if (!isAdbEnabled()) {
-            return;
-        }
-        state.value = isAdbNetworkEnabled();
+        state.value = isAdbEnabled() && isAdbNetworkEnabled();
+
         if (state.value) {
             WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
@@ -103,14 +117,22 @@ public class AdbOverNetworkTile extends QSTileImpl<BooleanState> {
                 state.label = address.getHostAddress();
             } else {
                 // if wifiInfo is null, set the label without host address
-                state.label = mContext.getString(R.string.qs_tile_network_adb_on);
+                state.label = mHost.getContext().getString(R.string.qs_tile_network_adb_on);
             }
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_network_adb_on);
+            //state.icon = ResourceIcon.get(R.drawable.ic_qs_network_adb_on);
         } else {
-            // Otherwise set the disabled label and icon
-            state.label = mContext.getString(R.string.qs_tile_network_adb_off);
-            state.icon = ResourceIcon.get(R.drawable.ic_qs_network_adb_off);
+            // Otherwise set the disabled label
+            state.label = mHost.getContext().getString(R.string.qs_tile_network_adb_off);
+            //state.icon = ResourceIcon.get(R.drawable.ic_qs_network_adb_off);
         }
+
+        state.icon = ResourceIcon.get(state.value
+                ? R.drawable.ic_qs_network_adb_on
+                : R.drawable.ic_qs_network_adb_off);
+
+        state.state = (!isAdbEnabled() || (mKeyguard.isShowing()
+                && mKeyguard.isSecure() && !isAdbNetworkEnabled())) ? Tile.STATE_UNAVAILABLE
+                : Tile.STATE_ACTIVE;
     }
 
     @Override
@@ -119,7 +141,7 @@ public class AdbOverNetworkTile extends QSTileImpl<BooleanState> {
     }
 
     private boolean isAdbEnabled() {
-        return Settings.Secure.getInt(mContext.getContentResolver(),
+        return Settings.Global.getInt(mContext.getContentResolver(),
                 Settings.Global.ADB_ENABLED, 0) > 0;
     }
 
@@ -135,12 +157,6 @@ public class AdbOverNetworkTile extends QSTileImpl<BooleanState> {
         }
     }
 
-    public AdbOverNetworkTile(QSHost host) {
-        super(host);
-
-        mActivityStarter = Dependency.get(ActivityStarter.class);
-    }
-
     private ContentObserver mObserver = new ContentObserver(mHandler) {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
@@ -154,11 +170,18 @@ public class AdbOverNetworkTile extends QSTileImpl<BooleanState> {
             mListening = listening;
             if (listening) {
                 mContext.getContentResolver().registerContentObserver(
-                        Settings.Secure.getUriFor(Settings.Global.ADB_ENABLED),
+                        Settings.Global.getUriFor(Settings.Global.ADB_ENABLED),
                         false, mObserver);
+                mKeyguard.addCallback(this);
             } else {
                 mContext.getContentResolver().unregisterContentObserver(mObserver);
+                mKeyguard.removeCallback(this);
             }
         }
+    }
+
+    @Override
+    public void onKeyguardShowingChanged() {
+        refreshState();
     }
 }
