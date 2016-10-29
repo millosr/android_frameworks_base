@@ -13,4 +13,9 @@
     <string name="qs_tile_network_adb_on">ADB</string>
     <string name="qs_tile_network_adb_off">ADB</string>
     <string name="quick_settings_network_adb_label">ADB connecté</string>
+
+    <!-- QS Jack Detection Force Tile -->
+    <string name="qs_tile_jackdetforce_off">Jack débranché</string>
+    <string name="qs_tile_jackdetforce_on">Jack branché</string>
+    <string name="quick_settings_jackdetforce_label">Jack détection</string>
 </resources>

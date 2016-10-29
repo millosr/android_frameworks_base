@@ -39,6 +39,7 @@ import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.ImmersiveModeTile;
 import com.android.systemui.qs.tiles.IntentTile;
+import com.android.systemui.qs.tiles.JackDetForceTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.LockscreenToggleTile;
 import com.android.systemui.qs.tiles.NfcTile;
@@ -89,6 +90,7 @@ public class QSFactoryImpl implements QSFactory {
         else if (tileSpec.equals("caffeine")) return new CaffeineTile(mHost);
         else if (tileSpec.equals("immersive_mode")) return new ImmersiveModeTile(mHost);
         else if (tileSpec.equals("sync")) return new SyncTile(mHost);
+        else if (tileSpec.equals("jackdetforce")) return new JackDetForceTile(mHost);
         // Intent tiles.
         else if (tileSpec.startsWith(IntentTile.PREFIX)) return IntentTile.create(mHost, tileSpec);
         else if (tileSpec.startsWith(CustomTile.PREFIX)) return CustomTile.create(mHost, tileSpec);

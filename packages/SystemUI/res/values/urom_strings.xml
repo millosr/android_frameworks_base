@@ -42,5 +42,11 @@
     <string name="accessibility_quick_settings_sync_on">Sync on</string>
     <string name="accessibility_quick_settings_sync_changed_off">Sync turned off</string>
     <string name="accessibility_quick_settings_sync_changed_on">Sync turned on</string>
+
+    <!-- QS Jack Detection Force Tile -->
+    <string name="qs_tile_jackdetforce_off">Jack unplugged</string>
+    <string name="qs_tile_jackdetforce_on">Jack plugged</string>
+    <string name="quick_settings_jackdetforce_label">Jack detection</string>
+
 </resources>
 
