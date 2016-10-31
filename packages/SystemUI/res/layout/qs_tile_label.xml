@@ -33,7 +33,7 @@
         android:orientation="horizontal">
         <Space
             android:id="@+id/expand_space"
-            android:layout_width="22dp"
+            android:layout_width="14dp"
             android:layout_height="0dp" />
 
         <TextView
@@ -59,8 +59,8 @@
 
         <ImageView
             android:id="@+id/expand_indicator"
-            android:layout_marginStart="4dp"
-            android:layout_width="18dp"
+            android:layout_marginStart="2dp"
+            android:layout_width="12dp"
             android:layout_height="match_parent"
             android:src="@drawable/qs_dual_tile_caret"
             android:tint="?android:attr/textColorPrimary"
