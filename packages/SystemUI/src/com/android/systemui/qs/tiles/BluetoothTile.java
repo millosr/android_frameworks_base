@@ -30,6 +30,7 @@ import android.widget.Switch;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.MetricsProto.MetricsEvent;
+import com.android.settingslib.Utils;
 import com.android.settingslib.bluetooth.CachedBluetoothDevice;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSDetailItems;
@@ -261,7 +262,14 @@ public class BluetoothTile extends QSTile<QSTile.BooleanState>  {
                     int state = device.getMaxConnectionState();
                     if (state == BluetoothProfile.STATE_CONNECTED) {
                         item.icon = R.drawable.ic_qs_bluetooth_connected;
-                        item.line2 = mContext.getString(R.string.quick_settings_connected);
+                        int batteryLevel = device.getBatteryLevel();
+                        if (batteryLevel != BluetoothDevice.BATTERY_LEVEL_UNKNOWN) {
+                            item.line2 = mContext.getString(
+                                    R.string.quick_settings_connected_battery_level,
+                                    Utils.formatPercentage(batteryLevel));
+                        } else {
+                            item.line2 = mContext.getString(R.string.quick_settings_connected);
+                        }
                         item.canDisconnect = true;
                     } else if (state == BluetoothProfile.STATE_CONNECTING) {
                         item.icon = R.drawable.ic_qs_bluetooth_connecting;
