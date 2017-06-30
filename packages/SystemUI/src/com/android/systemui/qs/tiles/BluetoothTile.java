@@ -132,12 +132,12 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
                 state.label = mController.getLastDeviceName();
                 CachedBluetoothDevice lastDevice = mController.getLastDevice();
                 if (lastDevice != null) {
-                    /*int batteryLevel = lastDevice.getBatteryLevel();
+                    int batteryLevel = lastDevice.getBatteryLevel();
                     if (batteryLevel != BluetoothDevice.BATTERY_LEVEL_UNKNOWN) {
                         state.icon = new BluetoothBatteryDrawable(batteryLevel,
                                 mContext.getResources().getFraction(
                                         R.fraction.bt_battery_scale_fraction, 1, 1));
-                    }*/
+                    }
                 }
                 state.contentDescription = mContext.getString(
                         R.string.accessibility_bluetooth_name, state.label);
@@ -308,15 +308,15 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
                     int state = device.getMaxConnectionState();
                     if (state == BluetoothProfile.STATE_CONNECTED) {
                         item.icon = R.drawable.ic_qs_bluetooth_connected;
-                        /*int batteryLevel = device.getBatteryLevel();
+                        int batteryLevel = device.getBatteryLevel();
                         if (batteryLevel != BluetoothDevice.BATTERY_LEVEL_UNKNOWN) {
                             item.iconDrawable = new BluetoothBatteryDrawable(batteryLevel);
                             item.line2 = mContext.getString(
                                     R.string.quick_settings_connected_battery_level,
                                     Utils.formatPercentage(batteryLevel));
-                        } else {*/
+                        } else {
                             item.line2 = mContext.getString(R.string.quick_settings_connected);
-                        //}
+                        }
                         item.canDisconnect = true;
                         items.add(connectedDevices, item);
                         connectedDevices++;
