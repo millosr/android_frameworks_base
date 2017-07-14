@@ -155,6 +155,7 @@ import android.location.LocationManager;
 import android.net.Proxy;
 import android.net.ProxyInfo;
 import android.net.Uri;
+import android.net.wifi.IWifiManager;
 import android.os.BatteryStats;
 import android.os.Binder;
 import android.os.Build;
@@ -3806,6 +3807,17 @@ public final class ActivityManagerService extends ActivityManagerNative
             app.gids = gids;
             app.requiredAbi = requiredAbi;
             app.instructionSet = instructionSet;
+
+            if ("com.google.android.setupwizard".equals(app.processName)) {
+                Slog.i(TAG, "Starting setup wizard, trying to enable Wi-Fi");
+                IWifiManager wifiMgr
+                        = IWifiManager.Stub.asInterface(ServiceManager.getService(Context.WIFI_SERVICE));
+                try {
+                    wifiMgr.setWifiEnabled(app.processName, true);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Wi-Fi operation failed", e);
+                }
+            }
 
             // Start the process.  It will either succeed and return a result containing
             // the PID of the new process, or else throw a RuntimeException.
