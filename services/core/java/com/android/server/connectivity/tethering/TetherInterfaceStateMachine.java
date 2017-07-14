@@ -298,7 +298,7 @@ public class TetherInterfaceStateMachine extends StateMachine {
                             mNMService.startInterfaceForwarding(mIfaceName,
                                     newUpstreamIfaceName);
                         } catch (Exception e) {
-                            Log.e(TAG, "Exception enabling Nat: " + e.toString());
+                            Log.e(TAG, "Exception enabling Nat: " + e.toString(), e);
                             mLastError = ConnectivityManager.TETHER_ERROR_ENABLE_NAT_ERROR;
                             transitionTo(mInitialState);
                             return true;
