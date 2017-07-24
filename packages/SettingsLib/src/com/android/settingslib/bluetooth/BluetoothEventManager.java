@@ -201,7 +201,7 @@ public final class BluetoothEventManager {
             cachedDevice.setRssi(rssi);
             cachedDevice.setBtClass(btClass);
             cachedDevice.setNewName(name);
-            cachedDevice.setVisible(true);
+            cachedDevice.setJustDiscovered(true);
         }
     }
 
@@ -371,7 +371,7 @@ public final class BluetoothEventManager {
                 if (device != null && device.getBondState() == BluetoothDevice.BOND_NONE) {
                     CachedBluetoothDevice cachedDevice = mDeviceManager.findDevice(device);
                     if (cachedDevice != null) {
-                        cachedDevice.setVisible(false);
+                        cachedDevice.setJustDiscovered(false);
                     }
                 }
             }
