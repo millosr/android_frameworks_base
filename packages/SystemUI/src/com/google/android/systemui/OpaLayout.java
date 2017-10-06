@@ -562,6 +562,11 @@ public class OpaLayout extends FrameLayout implements ButtonDispatcher.ButtonInt
         this.mRight = this.mGreen;
     }
 
+    @Override
+    public void setLandscape(boolean landscape) {
+        setVertical(!landscape);
+    }
+
     public void setOnLongClickListener(View.OnLongClickListener l) {
         mHome.setOnLongClickListener(l);
     }
