@@ -284,7 +284,7 @@ EGLSurface EglManager::createSurface(EGLNativeWindowType window, bool wideColorG
             EGL_NONE, EGL_NONE,
             EGL_NONE
     };
-
+/*
     if (EglExtensions.glColorSpace) {
         attribs[0] = EGL_GL_COLORSPACE_KHR;
 #ifdef ANDROID_ENABLE_LINEAR_BLENDING
@@ -301,7 +301,7 @@ EGLSurface EglManager::createSurface(EGLNativeWindowType window, bool wideColorG
         }
 #endif
     }
-
+*/
     EGLSurface surface = eglCreateWindowSurface(mEglDisplay,
             wideColorGamut ? mEglConfigWideGamut : mEglConfig, window, attribs);
     LOG_ALWAYS_FATAL_IF(surface == EGL_NO_SURFACE,
