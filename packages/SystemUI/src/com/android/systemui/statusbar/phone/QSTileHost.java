@@ -433,7 +433,7 @@ public class QSTileHost implements QSTile.Host, Tunable {
         else if (tileSpec.equals("airplane")) return new AirplaneModeTile(this);
         else if (tileSpec.equals("work")) return new WorkModeTile(this);
         else if (tileSpec.equals("rotation")) return new RotationLockTile(this);
-        else if (tileSpec.equals("flashlight")) return new FlashlightTile(this);
+        //else if (tileSpec.equals("flashlight")) return new FlashlightTile(this);
         else if (tileSpec.equals("location")) return new LocationTile(this);
         else if (tileSpec.equals("cast")) return new CastTile(this);
         else if (tileSpec.equals("hotspot")) return new HotspotTile(this);
@@ -444,12 +444,12 @@ public class QSTileHost implements QSTile.Host, Tunable {
         else if (tileSpec.equals("sync")) return new SyncTile(this);
         else if (tileSpec.equals("usb_tether")) return new UsbTetherTile(this);
         // Intent tiles.
-        else if (tileSpec.equals("lockscreen")) return  new LockscreenToggleTile(this);
-        else if (tileSpec.equals("network_adb")) return new AdbOverNetworkTile(this);
+        //else if (tileSpec.equals("lockscreen")) return  new LockscreenToggleTile(this);
+        //else if (tileSpec.equals("network_adb")) return new AdbOverNetworkTile(this);
         else if (tileSpec.equals("caffeine")) return new CaffeineTile(this);
         else if (tileSpec.equals("immersive_mode")) return new ImmersiveModeTile(this);
-        else if (tileSpec.equals("jackdetforce")) return new JackDetForceTile(this);
-        else if (tileSpec.equals("nfc")) return new NfcTile(this);
+        //else if (tileSpec.equals("jackdetforce")) return new JackDetForceTile(this);
+        //else if (tileSpec.equals("nfc")) return new NfcTile(this);
         else if (tileSpec.startsWith(IntentTile.PREFIX)) return IntentTile.create(this,tileSpec);
         else if (tileSpec.startsWith(CustomTile.PREFIX)) return CustomTile.create(this,tileSpec);
         else {
