@@ -15,6 +15,7 @@
  */
 package com.android.settingslib;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -71,6 +72,13 @@ public class CustomDialogPreference extends DialogPreference {
         mFragment = fragment;
     }
 
+    protected Activity getActivity() {
+	return mFragment != null ? mFragment.getActivity() : null;
+    }
+
+    protected void onShowDialog() {
+    }
+
     public static class CustomPreferenceDialogFragment extends PreferenceDialogFragment {
 
         public static CustomPreferenceDialogFragment newInstance(String key) {
@@ -108,5 +116,11 @@ public class CustomDialogPreference extends DialogPreference {
             super.onClick(dialog, which);
             getCustomizablePreference().onClick(dialog, which);
         }
+
+	@Override
+	public void onStart() {
+	    super.onStart();
+            getCustomizablePreference().onShowDialog();
+	}
     }
 }
