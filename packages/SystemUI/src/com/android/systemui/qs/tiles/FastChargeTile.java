@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.service.quicksettings.Tile;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.systemui.R;
@@ -73,6 +74,7 @@ public class FastChargeTile extends QSTileImpl<BooleanState> {
                 R.drawable.ic_qs_fastcharge_on : R.drawable.ic_qs_fastcharge_off);
         state.label = mContext.getString(state.value
                 ? R.string.qs_tile_fastcharge : R.string.qs_tile_fastcharge_off);
+        state.state = state.value ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
     }
 
     @Override
