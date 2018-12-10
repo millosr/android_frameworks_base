@@ -93,7 +93,7 @@ public class JackDetForceTile extends QSTileImpl<BooleanState> {
         state.icon = icon;
         state.label = mContext.getString(state.value
                 ? R.string.qs_tile_jackdetforce_on : R.string.qs_tile_jackdetforce_off);
-        state.state = Tile.STATE_ACTIVE;
+        state.state = state.value ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
     }
 
     @Override
