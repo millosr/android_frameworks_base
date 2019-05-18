@@ -16,8 +16,6 @@
 
 package android.bluetooth;
 
-import android.bluetooth.BluetoothCodecConfig;
-import android.bluetooth.BluetoothCodecStatus;
 import android.bluetooth.BluetoothDevice;
 
 /**
@@ -38,11 +36,4 @@ interface IBluetoothA2dp {
     oneway void adjustAvrcpAbsoluteVolume(int direction);
     oneway void setAvrcpAbsoluteVolume(int volume);
     boolean isA2dpPlaying(in BluetoothDevice device);
-    BluetoothCodecStatus getCodecStatus();
-    oneway void setCodecConfigPreference(in BluetoothCodecConfig codecConfig);
-    oneway void enableOptionalCodecs();
-    oneway void disableOptionalCodecs();
-    int supportsOptionalCodecs(in BluetoothDevice device);
-    int getOptionalCodecsEnabled(in BluetoothDevice device);
-    oneway void setOptionalCodecsEnabled(in BluetoothDevice device, int value);
 }

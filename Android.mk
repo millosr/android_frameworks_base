@@ -133,20 +133,14 @@ LOCAL_SRC_FILES += \
 	core/java/android/bluetooth/IBluetoothManager.aidl \
 	core/java/android/bluetooth/IBluetoothManagerCallback.aidl \
 	core/java/android/bluetooth/IBluetoothMap.aidl \
-	core/java/android/bluetooth/IBluetoothMapClient.aidl \
 	core/java/android/bluetooth/IBluetoothPbap.aidl \
 	core/java/android/bluetooth/IBluetoothPbapClient.aidl \
 	core/java/android/bluetooth/IBluetoothSap.aidl \
 	core/java/android/bluetooth/IBluetoothStateChangeCallback.aidl \
 	core/java/android/bluetooth/IBluetoothHeadsetClient.aidl \
-	core/java/android/bluetooth/IBluetoothInputHost.aidl \
-	core/java/android/bluetooth/IBluetoothHidDeviceCallback.aidl \
 	core/java/android/bluetooth/IBluetoothGatt.aidl \
 	core/java/android/bluetooth/IBluetoothGattCallback.aidl \
 	core/java/android/bluetooth/IBluetoothGattServerCallback.aidl \
-	core/java/android/bluetooth/le/IAdvertisingSetCallback.aidl \
-	core/java/android/bluetooth/le/IPeriodicAdvertisingCallback.aidl \
-	core/java/android/bluetooth/le/IScannerCallback.aidl \
 	core/java/android/content/IClipboard.aidl \
 	core/java/android/content/IContentService.aidl \
 	core/java/android/content/IIntentReceiver.aidl \

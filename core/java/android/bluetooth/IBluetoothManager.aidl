@@ -50,4 +50,3 @@ interface IBluetoothManager
     int updateBleAppCount(IBinder b, boolean enable, String packageName);
     boolean isBleAppPresent();
 }
-

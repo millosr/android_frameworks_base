@@ -76,7 +76,7 @@ import java.nio.ByteBuffer;
  * <div class="special reference">
  * <h3>Developer Guides</h3>
  * <p>For more information about using Bluetooth, read the
- * <a href="{@docRoot}guide/topics/connectivity/bluetooth.html">Bluetooth</a> developer guide.</p>
+ * <a href="{@docRoot}guide/topics/wireless/bluetooth.html">Bluetooth</a> developer guide.</p>
  * </div>
  *
  * {@see BluetoothServerSocket}
@@ -416,14 +416,9 @@ public final class BluetoothSocket implements Closeable {
                 if(mSocketState != SocketState.INIT) return EBADFD;
                 if(mPfd == null) return -1;
                 FileDescriptor fd = mPfd.getFileDescriptor();
-                if (fd == null) {
-                    Log.e(TAG, "bindListen(), null file descriptor");
-                    return -1;
-                }
-
-                if (DBG) Log.d(TAG, "bindListen(), Create LocalSocket");
+                if (DBG) Log.d(TAG, "bindListen(), new LocalSocket ");
                 mSocket = LocalSocket.createConnectedLocalSocket(fd);
-                if (DBG) Log.d(TAG, "bindListen(), new LocalSocket.getInputStream()");
+                if (DBG) Log.d(TAG, "bindListen(), new LocalSocket.getInputStream() ");
                 mSocketIS = mSocket.getInputStream();
                 mSocketOS = mSocket.getOutputStream();
             }
@@ -561,9 +556,8 @@ public final class BluetoothSocket implements Closeable {
 
     @Override
     public void close() throws IOException {
-        Log.d(TAG, "close() this: " + this + ", channel: " + mPort +
-            ", mSocketIS: " + mSocketIS + ", mSocketOS: " + mSocketOS +
-            "mSocket: " + mSocket + ", mSocketState: " + mSocketState);
+        if (DBG) Log.d(TAG, "close() in, this: " + this + ", channel: " + mPort + ", state: "
+                + mSocketState);
         if(mSocketState == SocketState.CLOSED)
             return;
         else
@@ -573,6 +567,9 @@ public final class BluetoothSocket implements Closeable {
                  if(mSocketState == SocketState.CLOSED)
                     return;
                  mSocketState = SocketState.CLOSED;
+                 if (DBG) Log.d(TAG, "close() this: " + this + ", channel: " + mPort +
+                         ", mSocketIS: " + mSocketIS + ", mSocketOS: " + mSocketOS +
+                         "mSocket: " + mSocket);
                  if(mSocket != null) {
                     if (DBG) Log.d(TAG, "Closing mSocket: " + mSocket);
                     mSocket.shutdownInput();

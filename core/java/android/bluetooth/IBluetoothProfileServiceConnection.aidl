@@ -24,7 +24,7 @@ import android.os.IBinder;
  *
  * {@hide}
  */
-oneway interface IBluetoothProfileServiceConnection {
+interface IBluetoothProfileServiceConnection {
     void onServiceConnected(in ComponentName comp, in IBinder service);
     void onServiceDisconnected(in ComponentName comp);
 }

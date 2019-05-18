@@ -42,7 +42,7 @@ import java.util.List;
  * functionality that can be performed on the device (connect, pair, disconnect,
  * etc.).
  */
-public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> {
+public final class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> {
     private static final String TAG = "CachedBluetoothDevice";
     private static final boolean DEBUG = Utils.V;
 
@@ -50,11 +50,8 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
     private final LocalBluetoothAdapter mLocalAdapter;
     private final LocalBluetoothProfileManager mProfileManager;
     private final BluetoothDevice mDevice;
-    //TODO: consider remove, BluetoothDevice.getName() is already cached
     private String mName;
-    // Need this since there is no method for getting RSSI
     private short mRssi;
-    //TODO: consider remove, BluetoothDevice.getBluetoothClass() is already cached
     private BluetoothClass mBtClass;
     private HashMap<LocalBluetoothProfile, Integer> mProfileConnectionState;
 
@@ -68,7 +65,7 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
     // Device supports PANU but not NAP: remove PanProfile after device disconnects from NAP
     private boolean mLocalNapRoleConnected;
 
-    private boolean mJustDiscovered;
+    private boolean mVisible;
 
     private int mMessageRejectionCount;
 
@@ -104,6 +101,9 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
     // See mConnectAttempted
     private static final long MAX_UUID_DELAY_FOR_AUTO_CONNECT = 5000;
     private static final long MAX_HOGP_DELAY_FOR_AUTO_CONNECT = 30000;
+
+    /** Auto-connect after pairing only if locally initiated. */
+    private boolean mConnectAfterPairing;
 
     /**
      * Describes the current device and profile for logging.
@@ -300,6 +300,7 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
             return false;
         }
 
+        mConnectAfterPairing = true;  // auto-connect after pairing
         return true;
     }
 
@@ -308,7 +309,7 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
      * slightly different for local vs. remote initiated pairing dialogs.
      */
     boolean isUserInitiatedPairing() {
-        return mDevice.isBondingInitiatedLocally();
+        return mConnectAfterPairing;
     }
 
     public void unpair() {
@@ -363,6 +364,7 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         migrateMessagePermissionChoice();
         fetchMessageRejectionCount();
 
+        mVisible = false;
         dispatchAttributesChanged();
     }
 
@@ -397,12 +399,10 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
     }
 
     /**
-     * User changes the device name
-     * @param name new alias name to be set, should never be null
+     * user changes the device name
      */
     public void setName(String name) {
-        // Prevent mName to be set to null if setName(null) is called
-        if (name != null && !TextUtils.equals(name, mName)) {
+        if (!mName.equals(name)) {
             mName = name;
             mDevice.setAlias(name);
             dispatchAttributesChanged();
@@ -431,21 +431,17 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         return !TextUtils.isEmpty(mDevice.getAliasName());
     }
 
-    /**
-     * Get battery level from remote device
-     * @return battery level in percentage [0-100], or {@link BluetoothDevice#BATTERY_LEVEL_UNKNOWN}
-     */
-    public int getBatteryLevel() {
-        return mDevice.getBatteryLevel();
-    }
-
     void refresh() {
         dispatchAttributesChanged();
     }
 
-    public void setJustDiscovered(boolean justDiscovered) {
-        if (mJustDiscovered != justDiscovered) {
-            mJustDiscovered = justDiscovered;
+    public boolean isVisible() {
+        return mVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        if (mVisible != visible) {
+            mVisible = visible;
             dispatchAttributesChanged();
         }
     }
@@ -508,7 +504,7 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         ParcelUuid[] localUuids = mLocalAdapter.getUuids();
         if (localUuids == null) return false;
 
-        /*
+        /**
          * Now we know if the device supports PBAP, update permissions...
          */
         processPhonebookAccess();
@@ -570,6 +566,7 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
     void onBondingStateChanged(int bondState) {
         if (bondState == BluetoothDevice.BOND_NONE) {
             mProfiles.clear();
+            mConnectAfterPairing = false;  // cancel auto-connect
             setPhonebookPermissionChoice(ACCESS_UNKNOWN);
             setMessagePermissionChoice(ACCESS_UNKNOWN);
             setSimPermissionChoice(ACCESS_UNKNOWN);
@@ -582,9 +579,10 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         if (bondState == BluetoothDevice.BOND_BONDED) {
             if (mDevice.isBluetoothDock()) {
                 onBondingDockConnect();
-            } else if (mDevice.isBondingInitiatedLocally()) {
+            } else if (mConnectAfterPairing) {
                 connect(false);
             }
+            mConnectAfterPairing = false;
         }
     }
 
@@ -669,8 +667,8 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
             (getBondState() == BluetoothDevice.BOND_BONDED ? 1 : 0);
         if (comparison != 0) return comparison;
 
-        // Just discovered above discovered in the past
-        comparison = (another.mJustDiscovered ? 1 : 0) - (mJustDiscovered ? 1 : 0);
+        // Visible above not visible
+        comparison = (another.mVisible ? 1 : 0) - (mVisible ? 1 : 0);
         if (comparison != 0) return comparison;
 
         // Stronger signal above weaker signal
@@ -889,12 +887,12 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         // BluetoothDevice.BATTERY_LEVEL_UNKNOWN, any other value should be a framework bug.
         // Thus assume here that if value is not BluetoothDevice.BATTERY_LEVEL_UNKNOWN, it must
         // be valid
-        final int batteryLevel = getBatteryLevel();
+        /*final int batteryLevel = getBatteryLevel();
         if (batteryLevel != BluetoothDevice.BATTERY_LEVEL_UNKNOWN) {
             // TODO: name com.android.settingslib.bluetooth.Utils something different
             batteryLevelPercentageString =
                     com.android.settingslib.Utils.formatPercentage(batteryLevel);
-        }
+        }*/
 
         if (profileConnected) {
             if (a2dpNotConnected && hfpNotConnected) {

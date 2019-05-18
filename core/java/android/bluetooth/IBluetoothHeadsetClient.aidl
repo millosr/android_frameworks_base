@@ -29,6 +29,9 @@ interface IBluetoothHeadsetClient {
     boolean connect(in BluetoothDevice device);
     boolean disconnect(in BluetoothDevice device);
 
+    boolean acceptIncomingConnect(in BluetoothDevice device);
+    boolean rejectIncomingConnect(in BluetoothDevice device);
+
     List<BluetoothDevice> getConnectedDevices();
     List<BluetoothDevice> getDevicesMatchingConnectionStates(in int[] states);
     int getConnectionState(in BluetoothDevice device);
@@ -44,21 +47,23 @@ interface IBluetoothHeadsetClient {
     boolean acceptCall(in BluetoothDevice device, int flag);
     boolean holdCall(in BluetoothDevice device);
     boolean rejectCall(in BluetoothDevice device);
-    boolean terminateCall(in BluetoothDevice device, in BluetoothHeadsetClientCall call);
+    boolean terminateCall(in BluetoothDevice device, int index);
 
     boolean enterPrivateMode(in BluetoothDevice device, int index);
     boolean explicitCallTransfer(in BluetoothDevice device);
 
-    BluetoothHeadsetClientCall dial(in BluetoothDevice device, String number);
+    boolean redial(in BluetoothDevice device);
+    boolean dial(in BluetoothDevice device, String number);
+    boolean dialMemory(in BluetoothDevice device, int location);
 
     boolean sendDTMF(in BluetoothDevice device, byte code);
     boolean getLastVoiceTagNumber(in BluetoothDevice device);
 
     int getAudioState(in BluetoothDevice device);
-    boolean connectAudio(in BluetoothDevice device);
-    boolean disconnectAudio(in BluetoothDevice device);
-    void setAudioRouteAllowed(in BluetoothDevice device, boolean allowed);
-    boolean getAudioRouteAllowed(in BluetoothDevice device);
+    boolean connectAudio();
+    boolean disconnectAudio();
+    void setAudioRouteAllowed(boolean allowed);
+    boolean getAudioRouteAllowed();
 
     Bundle getCurrentAgFeatures(in BluetoothDevice device);
 }
