@@ -32,6 +32,7 @@ public interface BluetoothController {
     boolean isBluetoothConnected();
     boolean isBluetoothConnecting();
     String getLastDeviceName();
+    int getLastDeviceBatteryLevel();
     void setBluetoothEnabled(boolean enabled);
     Collection<CachedBluetoothDevice> getDevices();
     void connect(CachedBluetoothDevice device);

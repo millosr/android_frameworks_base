@@ -118,6 +118,12 @@ public class BluetoothTile extends QSTile<QSTile.BooleanState>  {
             if (connected) {
                 state.icon = ResourceIcon.get(R.drawable.ic_qs_bluetooth_connected);
                 state.label = mController.getLastDeviceName();
+
+                int batteryLevel = mController.getLastDeviceBatteryLevel();
+                if (batteryLevel != BluetoothDevice.BATTERY_LEVEL_UNKNOWN) {
+                    state.label = state.label + " (" + Utils.formatPercentage(batteryLevel) + ")";
+                }
+
                 state.contentDescription = mContext.getString(
                         R.string.accessibility_bluetooth_name, state.label);
                 state.minimalContentDescription = state.minimalContentDescription + ","

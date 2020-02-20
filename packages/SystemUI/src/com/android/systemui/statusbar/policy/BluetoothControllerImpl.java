@@ -18,6 +18,7 @@ package com.android.systemui.statusbar.policy;
 
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -162,6 +163,12 @@ public class BluetoothControllerImpl implements BluetoothController, BluetoothCa
     @Override
     public String getLastDeviceName() {
         return mLastDevice != null ? mLastDevice.getName() : null;
+    }
+
+    @Override
+    public int getLastDeviceBatteryLevel() {
+        return mLastDevice != null ? mLastDevice.getBatteryLevel()
+                : BluetoothDevice.BATTERY_LEVEL_UNKNOWN;
     }
 
     @Override
