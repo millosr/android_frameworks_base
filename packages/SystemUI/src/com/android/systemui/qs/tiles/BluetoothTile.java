@@ -137,6 +137,7 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
                         state.icon = new BluetoothBatteryDrawable(batteryLevel,
                                 mContext.getResources().getFraction(
                                         R.fraction.bt_battery_scale_fraction, 1, 1));
+                        state.label = state.label + " (" + Utils.formatPercentage(batteryLevel) + ")";
                     }
                 }
                 state.contentDescription = mContext.getString(
