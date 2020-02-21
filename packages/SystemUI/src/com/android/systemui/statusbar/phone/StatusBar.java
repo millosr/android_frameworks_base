@@ -3765,7 +3765,9 @@ public class StatusBar extends SystemUI implements DemoMode,
     public void startActivityDismissingKeyguard(final Intent intent, boolean onlyProvisioned,
             final boolean dismissShade, final boolean disallowEnterPictureInPictureWhileLaunching,
             final Callback callback) {
-        if (onlyProvisioned && !isDeviceProvisioned()) return;
+        if ((onlyProvisioned && !isDeviceProvisioned()) || (intent == null)) {
+            return;
+        }
 
         final boolean afterKeyguardGone = PreviewInflater.wouldLaunchResolverActivity(
                 mContext, intent, mCurrentUserId);
