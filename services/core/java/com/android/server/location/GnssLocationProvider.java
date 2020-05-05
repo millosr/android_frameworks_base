@@ -417,6 +417,9 @@ public class GnssLocationProvider implements LocationProviderInterface {
 
     private int mYearOfHardware = 0;
 
+    private long mTimestampOffset = 0;
+    private long mLastLocationTS = 0;
+
     // Set lower than the current ITAR limit of 600m/s to allow this to trigger even if GPS HAL
     // stops output right at 600m/s, depriving this of the information of a device that reaches
     // greater than 600m/s, and higher than the speed of sound to avoid impacting most use cases.
@@ -1533,8 +1536,29 @@ public class GnssLocationProvider implements LocationProviderInterface {
             return;  // No output of location allowed
         }
 
-        if (VERBOSE) Log.v(TAG, "reportLocation lat: " + latitude + " long: " + longitude +
-                " timestamp: " + timestamp);
+        long adjTimestamp = timestamp + mTimestampOffset;
+        long tsDiff = adjTimestamp - mLastLocationTS;
+        if (tsDiff < 0 || tsDiff > 60000) {
+            long systemTS = System.currentTimeMillis();
+            long tsSecDiff = (systemTS - timestamp) / 1000;
+
+            if (tsSecDiff < -30 || tsSecDiff > 30) {
+                mTimestampOffset = tsSecDiff * 1000;
+                adjTimestamp = timestamp + mTimestampOffset;
+
+                Log.w(TAG, "Hal reported invalid location timestamp: " + timestamp +
+                    ", using offset: " + mTimestampOffset + ", adjusted ts: " + adjTimestamp +
+                    ", system ts : " + systemTS);
+            } else {
+                mTimestampOffset = 0;
+                adjTimestamp = timestamp;
+            }
+        }
+
+        if (VERBOSE) Log.v(TAG, "reportLocation lat: " + latitude + ", long: " + longitude +
+                ", timestamp: " + timestamp + ", adjusted timestamp: " + adjTimestamp);
+        timestamp = adjTimestamp;
+        mLastLocationTS = adjTimestamp;
 
         synchronized (mLocation) {
             mLocationFlags = flags;
